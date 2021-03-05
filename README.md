@@ -2,7 +2,7 @@ This project is developed using Tuya SDK, which enables you to quickly develop b
 For more information, please check Tuya Developer Website.
 
 一、方案标题
-智能宠物喂食器
+Pet_Feeder
 
 二、应用场景
 地点：养宠物的家庭
