@@ -41,10 +41,10 @@
 #define CONFIG_MODE     CONFIG_MODE_SPECIAL             //防误触模式(特殊配网方式)
 
 /*  设置低功耗配网方式和特殊配网方式的配网模式打开时间,该宏处于注释状态将按三分钟处理,可以支持的设置数据范围: 3~10 分钟  */
-//#define CONFIG_MODE_DELAY_TIME    10         //配网模式打开时间 单位:分钟
+#define CONFIG_MODE_DELAY_TIME    10         //配网模式打开时间 单位:分钟
 
 /*  选择smart模式和AP模式,该宏都注释将保持smart模式和AP模式互相切换  */
-//#define CONFIG_MODE_CHOOSE        0         //模块同时支持AP连接配网和EZ配网无需用户切换,对应的配网状态0x06
+#define CONFIG_MODE_CHOOSE        0         //模块同时支持AP连接配网和EZ配网无需用户切换,对应的配网状态0x06
 //#define CONFIG_MODE_CHOOSE        1         //仅只有AP配网模式
 
 /*  启用模块的红外功能并告知模块红外的收发脚使用那些IO口，没有该字段红外能力默认关闭  */
@@ -129,7 +129,7 @@ wifi_test_result内部有#err提示,完成函数后请删除该#err
 此两函数内#err提示,完成函数后请删除该#err
 开启天气功能，串口数据缓存区的大小要开大一些
 ******************************************************************************/
-//#define         WEATHER_ENABLE                  //打开天气功能
+#define         WEATHER_ENABLE                  //打开天气功能
 #ifdef          WEATHER_ENABLE
 /*  在protocol.c文件中weather_choose数组中可调整，然后将打开服务的类型数目写到此宏定义  */
 #define         WEATHER_CHOOSE_CNT              4   //选择的需要天气服务类型的数目
