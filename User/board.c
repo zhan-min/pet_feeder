@@ -14,8 +14,7 @@
 #include "bsp_led.h"
 #include "bsp_usart.h"
 #include "bsp_key_exti.h"
-#include "bsp_PS2.h"
-#include "OSC.h"
+#include "run.h"
 
 /* RT-Thread相关头文件 */
 #include <rthw.h>
@@ -60,7 +59,6 @@ void rt_hw_board_init()
 	USART_Config();
 	ADCx_Init();
   EXTI_Key_Config();
-	PS2_Key_Config();
 	
 	//其中0、3、5、6 模式适合从左至右显示文字，
 	//不推荐使用其它模式显示文字	其它模式显示文字会有镜像效果			
@@ -69,32 +67,8 @@ void rt_hw_board_init()
 	LCD_SetColors(WHITE, BLACK);
 	ILI9341_Clear(0,0,LCD_X_LENGTH,LCD_Y_LENGTH);
 	
-	//绘制波形显示区域框和背景虚线
-	PlotBlackground();
-	
-	char dispBuff[100];
-	uint8_t StartPos_X=10, StartPos_Y=7, Div=50;
-	ILI9341_Clear(0, 0, 320, 30);
-	
-	sprintf(dispBuff,"%.1fkHz", CurWaveFrq);
-	ILI9341_DispString_EN(Div*0+StartPos_X, StartPos_Y, dispBuff);	
-	/*使用c标准库把变量转化成字符串*/
-	sprintf(dispBuff,"%.1fV", CurTriggerValue);
-	ILI9341_DispString_EN(Div*1+StartPos_X+20, StartPos_Y, dispBuff);
-	ILI9341_DispString_EN(Div*2+StartPos_X+15, StartPos_Y, CurTriggerMode);	
-	ILI9341_DispString_EN(Div*3+StartPos_X, StartPos_Y, CurSamplingMode);
-	if(CurTimePerDiv < 1000)
-	{
-		sprintf(dispBuff,"%dus", CurTimePerDiv);
-	}
-	else
-	{
-		sprintf(dispBuff,"%dms", CurTimePerDiv/1000);
-	}
-	ILI9341_DispString_EN(Div*4+StartPos_X, StartPos_Y, dispBuff);
-	ILI9341_DispString_EN(Div*5+StartPos_X, StartPos_Y, CurSamplStatus);
-			
-	
+	/*新添加的组件初始化*/
+	wifi_protocol_init();
 	
 	
 /* 调用组件初始化函数 (use INIT_BOARD_EXPORT()) */

@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER,STM32F10X_HD</Define>
               <Undefine></Undefine>
-              <IncludePath>..\Libraries\CMSIS;..\Libraries\STM32F10x_StdPeriph_Driver\inc;..\User;..\User\usart;..\User\adc;..\User\lcd;..\User\Led;..\User\key_exti;..\User\OSC;..\User\PS2;..\rtthread\src;..\rtthread\libcpu\arm\cortex-m3;..\rtthread\include;..\User\Delay</IncludePath>
+              <IncludePath>..\Libraries\CMSIS;..\Libraries\STM32F10x_StdPeriph_Driver\inc;..\User;..\User\usart;..\User\adc;..\User\lcd;..\User\Led;..\User\key_exti;..\rtthread\src;..\rtthread\libcpu\arm\cortex-m3;..\rtthread\include;..\User\Delay;..\User\run;..\mcu_sdk</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -568,16 +568,6 @@
               <FilePath>..\User\key_exti\bsp_key_exti.c</FilePath>
             </File>
             <File>
-              <FileName>OSC.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\User\OSC\OSC.c</FilePath>
-            </File>
-            <File>
-              <FileName>bsp_PS2.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\User\PS2\bsp_PS2.c</FilePath>
-            </File>
-            <File>
               <FileName>board.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\User\board.c</FilePath>
@@ -586,6 +576,11 @@
               <FileName>delay.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\User\Delay\delay.c</FilePath>
+            </File>
+            <File>
+              <FileName>run.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\run\run.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -691,6 +686,26 @@
               <FileName>context_rvds.S</FileName>
               <FileType>2</FileType>
               <FilePath>..\rtthread\libcpu\arm\cortex-m3\context_rvds.S</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>SDK</GroupName>
+          <Files>
+            <File>
+              <FileName>mcu_api.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\mcu_sdk\mcu_api.c</FilePath>
+            </File>
+            <File>
+              <FileName>protocol.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\mcu_sdk\protocol.c</FilePath>
+            </File>
+            <File>
+              <FileName>system.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\mcu_sdk\system.c</FilePath>
             </File>
           </Files>
         </Group>
