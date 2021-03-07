@@ -8,6 +8,9 @@
 
 /* 开发板硬件bsp头文件 */
 #include "board.h" 
+#include "mcu_api.h"
+
+/*旧版本，看情况选用或删除*/
 #include "bsp_ili9341_lcd.h"
 #include "bsp_adc.h"
 #include "delay.h"
@@ -52,11 +55,13 @@ void rt_hw_board_init()
   SysTick_Config( SystemCoreClock / RT_TICK_PER_SECOND );	
   
 	/* 硬件BSP初始化统统放在这里，比如LED，串口，LCD等 */
-  
+	USART_Config();
+	wifi_protocol_init();
+	
+	/*旧版本，看情况选用或删除*/
 	ILI9341_Init ();//LCD 初始化
 	LED_GPIO_Config();
 	LED2_ON;
-	USART_Config();
 	ADCx_Init();
   EXTI_Key_Config();
 	
@@ -66,9 +71,6 @@ void rt_hw_board_init()
   ILI9341_GramScan ( 3 );
 	LCD_SetColors(WHITE, BLACK);
 	ILI9341_Clear(0,0,LCD_X_LENGTH,LCD_Y_LENGTH);
-	
-	/*新添加的组件初始化*/
-	wifi_protocol_init();
 	
 	
 /* 调用组件初始化函数 (use INIT_BOARD_EXPORT()) */
