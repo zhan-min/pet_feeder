@@ -3,8 +3,20 @@
 #include "rtthread.h"
 
 /* Includes ------------------------------------------------------------------*/
+#include "bsp_usart.h"
+#include "mcu_api.h"
 
 
+// 串口中断服务函数
+void DEBUG_USART_IRQHandler(void)
+{
+  uint8_t ucTemp;
+	if(USART_GetITStatus(DEBUG_USARTx,USART_IT_RXNE)!=RESET)
+	{		
+		ucTemp = USART_ReceiveData(DEBUG_USARTx);
+		uart_receive_input(ucTemp);
+	}	 
+}
 
 
 /**

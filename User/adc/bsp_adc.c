@@ -126,87 +126,9 @@ void ADCx_Init(void)
 }
 
 
-FlagStatus Get_Trigger_Status(float d0, float d1)
-{
-	if(TriggerModeNrb == 0)
-	{
-		if((d0 > CurTriggerValue) && (d1 <= CurTriggerValue))
-		{
-			return SET;
-		}
-	}
-	else if(TriggerModeNrb == 1)
-	{
-		if((d1 >= CurTriggerValue) && (d0 < CurTriggerValue))
-			{
-				return SET;
-			}
-	}	
-	return RESET;
-}
 
 
-
-//void Get_Wave(void* parameter)
-//{
-//	uint8_t   PreSample=100, flag = 1;//波形数据采集完成标志位
-//	uint16_t  ADC_SampleCount = 0;
-//	float d0, d1;
-//	
-//	while(1)
-//	{
-//		ADC_SampleCount = 0;
-//		
-//		while(PreSample--)//丢弃前面20个
-//		{
-//			while(ADC_GetITStatus(ADCx_1, ADC_IT_EOC) == RESET);
-//			d0 = ADC_GetConversionValue(ADCx_1)/4096.0*3.3;
-//			ADC_ClearITPendingBit(ADCx_1, ADC_IT_EOC);	
-//		}
-//		
-//		//等待触发
-//		if(SamplingModeNrb != 0)
-//		{
-//			do
-//			{
-//				while(ADC_GetITStatus(ADCx_1, ADC_IT_EOC) == RESET);
-//				d0 = ADC_GetConversionValue(ADCx_1)/4096.0*3.3;
-//				ADC_ClearITPendingBit(ADCx_1, ADC_IT_EOC);		
-//				while(ADC_GetITStatus(ADCx_1, ADC_IT_EOC) == RESET);
-//				d1 = ADC_GetConversionValue(ADCx_1)/4096.0*3.3;
-//				ADC_ClearITPendingBit(ADCx_1, ADC_IT_EOC);
-//			}while(Get_Trigger_Status(d0, d1) != SET);
-//		}
-//		
-//		//开始采样
-//		while(ADC_SampleCount < ADCx_1_SampleNbr)
-//		{
-//			while(ADC_GetITStatus(ADCx_1, ADC_IT_EOC) != SET);
-//			ADC_ConvertedValue[ADC_SampleCount] = ADC_GetConversionValue(ADCx_1)*198/4096;//将采样值映射到显示区间
-//			if((CurTimePerDiv/50 -7) != 0 && (CurTimePerDiv/50 -7) <= 1000)
-//			{
-//				rt_hw_us_delay( CurTimePerDiv/50 -7 );//采样间隔时间
-//			}
-//			else
-//			{
-//				rt_thread_delay( (CurTimePerDiv/50)/1000 );//采样间隔时间
-//			}			
-//			ADC_ClearITPendingBit(ADCx_1, ADC_IT_EOC);
-//			ADC_SampleCount++;
-//		}
-//		if(SamplingModeNrb == 2)//如果是单次模式则挂起波形采样线程
-//		{
-//			rt_mq_send(getwave_status_queue, &flag, sizeof(flag));
-//			SamplStatusNrb = 0;
-//			CurSamplStatus = SamplStatus[SamplStatusNrb];
-//			Setting_Inf_Update(0);
-//			rt_thread_suspend(GetWave_thread);
-//		}
-//		rt_mq_send(getwave_status_queue, &flag, sizeof(flag));
-//	}	
-//}
-
-
+/*
 uint16_t Get_X_Data(void)
 {
 	uint16_t XData = 0;
@@ -231,5 +153,5 @@ uint16_t Get_Y_Data(void)
 	ADC_ClearITPendingBit(ADCx_2, ADC_IT_EOC);
 	return YData;
 }
-
+*/
 

@@ -608,8 +608,6 @@ unsigned long mcu_get_dp_download_value(const unsigned char value[],unsigned sho
  */
 void uart_receive_input(unsigned char value)
 {
-    #error "请在串口接收中断中调用uart_receive_input(value),串口数据由MCU_SDK处理,用户请勿再另行处理,完成后删除该行" 
-    
     if(1 == rx_buf_out - rx_buf_in) {
         //串口接收缓存已满
     }else if((rx_buf_in > rx_buf_out) && ((rx_buf_in - rx_buf_out) >= sizeof(wifi_uart_rx_buf))) {
@@ -649,7 +647,6 @@ void uart_receive_buff_input(unsigned char value[], unsigned short data_len)
  */
 void wifi_uart_service(void)
 {
-    #error "请直接在main函数的while(1){}中添加wifi_uart_service(),调用该函数不要加任何条件判断,完成后删除该行" 
     static unsigned short rx_in = 0;
     unsigned short offset = 0;
     unsigned short rx_value_len = 0;

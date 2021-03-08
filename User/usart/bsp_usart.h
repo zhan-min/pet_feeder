@@ -11,16 +11,6 @@
 	* 2-修改GPIO的宏
   */
 	
-// 串口对应的DMA请求通道
-#define  USART_RX_DMA_CHANNEL     DMA1_Channel5
-// 外设寄存器地址
-#define  USART_DR_ADDRESS        (&DEBUG_USARTx->DR)
-// 一次发送的数据量
-#define  USART_RBUFF_SIZE            1000 
-
-
-
-  
 // 串口1-USART1
 #define  DEBUG_USARTx                   USART1
 #define  DEBUG_USART_CLK                RCC_APB2Periph_USART1
@@ -115,9 +105,8 @@
 
 
 void USART_Config(void);
-void USARTx_DMA_Config(void);
 void Usart_SendByte( USART_TypeDef * pUSARTx, uint8_t ch);
 void Usart_SendString( USART_TypeDef * pUSARTx, char *str);
 void Usart_SendHalfWord( USART_TypeDef * pUSARTx, uint16_t ch);
-void Uart_DMA_Rx_Data(void);
+
 #endif /* __USART_H */

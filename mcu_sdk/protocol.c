@@ -31,6 +31,7 @@
 #include "wifi.h"
 #include "bsp_usart.h"
 
+
 #ifdef WEATHER_ENABLE
 /**
  * @var    weather_choose
@@ -137,8 +138,6 @@ void uart_transmit_output(unsigned char value)
  */
 void all_data_update(void)
 {
-    #error "请在此处理可下发可上报数据及只上报数据示例,处理完成后删除该行"
-    /*
     //此代码为平台自动生成，请按照实际数据修改每个可下发可上报函数和只上报函数
     mcu_dp_raw_update(DPID_MEAL_PLAN,当前喂食计划指针,当前喂食计划数据长度); //RAW型数据上报;
     mcu_dp_bool_update(DPID_QUICK_FEED,当前快速喂食); //BOOL型数据上报;
@@ -146,10 +145,9 @@ void all_data_update(void)
     mcu_dp_enum_update(DPID_FEED_STATE,当前喂食状态); //枚举型数据上报;
     mcu_dp_bool_update(DPID_EXPORT_CALIBRATE,当前出粮校准); //BOOL型数据上报;
     mcu_dp_value_update(DPID_FEED_REPORT,当前喂食结果上报); //VALUE型数据上报;
-    mcu_dp_value_update(DPID_VOICE_TIMES,当前语音播放次数); //VALUE型数据上报;
-    mcu_dp_bool_update(DPID_SWITCH,当前开关); //BOOL型数据上报;
+    mcu_dp_value_update(DPID_VOICE_TIMES,1); //VALUE型数据上报;
+    mcu_dp_bool_update(DPID_SWITCH,1); //BOOL型数据上报;
 
-    */
 }
 
 
