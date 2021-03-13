@@ -8,7 +8,7 @@
 
 /* 开发板硬件bsp头文件 */
 #include "board.h" 
-#include "mcu_api.h"
+#include "wifi.h"
 
 /*旧版本，看情况选用或删除*/
 #include "bsp_ili9341_lcd.h"

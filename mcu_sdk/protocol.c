@@ -30,6 +30,11 @@
 
 #include "wifi.h"
 #include "bsp_usart.h"
+#include "rtthread.h"
+
+
+uint8_t meal_plan[] = "0112320c01";//喂食计划
+
 
 
 #ifdef WEATHER_ENABLE
@@ -139,14 +144,14 @@ void uart_transmit_output(unsigned char value)
 void all_data_update(void)
 {
     //此代码为平台自动生成，请按照实际数据修改每个可下发可上报函数和只上报函数
-    mcu_dp_raw_update(DPID_MEAL_PLAN,当前喂食计划指针,当前喂食计划数据长度); //RAW型数据上报;
-    mcu_dp_bool_update(DPID_QUICK_FEED,当前快速喂食); //BOOL型数据上报;
-    mcu_dp_value_update(DPID_MANUAL_FEED,当前手动喂食); //VALUE型数据上报;
-    mcu_dp_enum_update(DPID_FEED_STATE,当前喂食状态); //枚举型数据上报;
-    mcu_dp_bool_update(DPID_EXPORT_CALIBRATE,当前出粮校准); //BOOL型数据上报;
-    mcu_dp_value_update(DPID_FEED_REPORT,当前喂食结果上报); //VALUE型数据上报;
+    mcu_dp_raw_update(DPID_MEAL_PLAN, meal_plan, 5); //RAW型数据上报;
+    mcu_dp_bool_update(DPID_QUICK_FEED, 0); //BOOL型数据上报;
+    mcu_dp_value_update(DPID_MANUAL_FEED, 0); //VALUE型数据上报;
+    mcu_dp_enum_update(DPID_FEED_STATE, 0); //枚举型数据上报;
+    mcu_dp_bool_update(DPID_EXPORT_CALIBRATE, 0); //BOOL型数据上报;
+    mcu_dp_value_update(DPID_FEED_REPORT, 0); //VALUE型数据上报;
     mcu_dp_value_update(DPID_VOICE_TIMES,1); //VALUE型数据上报;
-    mcu_dp_bool_update(DPID_SWITCH,1); //BOOL型数据上报;
+    mcu_dp_bool_update(DPID_SWITCH,0); //BOOL型数据上报;
 
 }
 
@@ -166,19 +171,26 @@ void all_data_update(void)
 *****************************************************************************/
 static unsigned char dp_download_meal_plan_handle(const unsigned char value[], unsigned short length)
 {
-    //示例:当前DP类型为RAW
-    unsigned char ret;
-    /*
-    //RAW类型数据处理
-    
-    */
-    
-    //处理完DP数据后应有反馈
-    ret = mcu_dp_raw_update(DPID_MEAL_PLAN,value,length);
-    if(ret == SUCCESS)
-        return SUCCESS;
-    else
-        return ERROR;
+	//示例:当前DP类型为RAW
+	unsigned char ret;
+	/*
+	//RAW类型数据处理    
+	*/
+	
+	//先把接收的数据打印出来看看
+	for(uint8_t i=0; i<length; i++)
+	{
+		rt_kprintf("meal_plan: ");
+		rt_kprintf("%c\r",value[i]);
+		rt_kprintf("\r\n");
+	}	
+	
+	//处理完DP数据后应有反馈
+	ret = mcu_dp_raw_update(DPID_MEAL_PLAN,value,length);
+	if(ret == SUCCESS)
+			return SUCCESS;
+	else
+			return ERROR;
 }
 /*****************************************************************************
 函数名称 : dp_download_quick_feed_handle
@@ -198,8 +210,10 @@ static unsigned char dp_download_quick_feed_handle(const unsigned char value[], 
     quick_feed = mcu_get_dp_download_bool(value,length);
     if(quick_feed == 0) {
         //开关关
+			rt_kprintf("quick_feed_close");
     }else {
         //开关开
+			rt_kprintf("quick_feed_open");
     }
   
     //处理完DP数据后应有反馈
@@ -228,6 +242,7 @@ static unsigned char dp_download_manual_feed_handle(const unsigned char value[],
     //VALUE类型数据处理
     
     */
+	//这个数据不需要下发
     
     //处理完DP数据后应有反馈
     ret = mcu_dp_value_update(DPID_MANUAL_FEED,manual_feed);
@@ -254,8 +269,10 @@ static unsigned char dp_download_export_calibrate_handle(const unsigned char val
     export_calibrate = mcu_get_dp_download_bool(value,length);
     if(export_calibrate == 0) {
         //开关关
+			rt_kprintf("储量校准关闭");
     }else {
         //开关开
+			rt_kprintf("储量校准打开");
     }
   
     //处理完DP数据后应有反馈
@@ -284,6 +301,7 @@ static unsigned char dp_download_voice_times_handle(const unsigned char value[],
     //VALUE类型数据处理
     
     */
+	//这个也不需要下发
     
     //处理完DP数据后应有反馈
     ret = mcu_dp_value_update(DPID_VOICE_TIMES,voice_times);
@@ -310,8 +328,10 @@ static unsigned char dp_download_switch_handle(const unsigned char value[], unsi
     switch_1 = mcu_get_dp_download_bool(value,length);
     if(switch_1 == 0) {
         //开关关
+			rt_kprintf("pet_feeder_close");
     }else {
         //开关开
+			rt_kprintf("pet_feeder_open");
     }
   
     //处理完DP数据后应有反馈
@@ -508,7 +528,7 @@ void mcu_write_rtctime(unsigned char time[])
  */
 void wifi_test_result(unsigned char result,unsigned char rssi)
 {
-    #error "请自行实现wifi功能测试成功/失败代码,完成后请删除该行"
+    //#error "请自行实现wifi功能测试成功/失败代码,完成后请删除该行"
     if(result == 0) {
         //测试失败
         if(rssi == 0x00) {
@@ -543,12 +563,14 @@ void mcu_open_weather(void)
         send_len = set_wifi_uart_buffer(send_len, (unsigned char *)buffer, buffer[0]+1);
     }
     
-    #error "请根据提示，自行完善打开天气服务代码，完成后请删除该行"
+    //#error "请根据提示，自行完善打开天气服务代码，完成后请删除该行"
     /*
     //当获取的参数有和时间有关的参数时(如:日出日落)，需要搭配t.unix或者t.local使用，需要获取的参数数据是按照格林时间还是本地时间
     buffer[0] = sprintf(buffer+1,"t.unix"); //格林时间   或使用  buffer[0] = sprintf(buffer+1,"t.local"); //本地时间
     send_len = set_wifi_uart_buffer(send_len, (unsigned char *)buffer, buffer[0]+1);
     */
+		buffer[0] = sprintf(buffer+1,"t.local"); //本地时间
+    send_len = set_wifi_uart_buffer(send_len, (unsigned char *)buffer, buffer[0]+1);
     
     buffer[0] = sprintf(buffer+1,"w.date.%d",WEATHER_FORECAST_DAYS_NUM);
     send_len = set_wifi_uart_buffer(send_len, (unsigned char *)buffer, buffer[0]+1);
@@ -567,14 +589,16 @@ void mcu_open_weather(void)
  */
 void weather_open_return_handle(unsigned char res, unsigned char err)
 {
-    #error "请自行完成打开天气功能返回数据处理代码,完成后请删除该行"
+    //#error "请自行完成打开天气功能返回数据处理代码,完成后请删除该行"
     unsigned char err_num = 0;
     
     if(res == 1) {
         //打开天气返回成功
+			rt_kprintf("打开天气返回成功");
     }else if(res == 0) {
         //打开天气返回失败
         //获取错误码
+			rt_kprintf("打开天气返回失败");
         err_num = err; 
     }
 }
@@ -594,7 +618,7 @@ void weather_open_return_handle(unsigned char res, unsigned char err)
  */
 void weather_data_user_handle(char *name, unsigned char type, const unsigned char *data, char day)
 {
-    #error "这里仅给出示例，请自行完善天气数据处理代码,完成后请删除该行"
+    //#error "这里仅给出示例，请自行完善天气数据处理代码,完成后请删除该行"
     int value_int;
     char value_string[50];//由于有的参数内容较多，这里默认为50。您可以根据定义的参数，可以适当减少该值
     

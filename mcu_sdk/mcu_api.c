@@ -20,7 +20,7 @@
 #define MCU_API_GLOBAL
 
 #include "wifi.h"
-
+#include "stm32f10x.h"
 /**
  * @brief  hex转bcd
  * @param[in] {Value_H} 高字节
@@ -631,7 +631,7 @@ void uart_receive_input(unsigned char value)
  */
 void uart_receive_buff_input(unsigned char value[], unsigned short data_len)
 {
-    #error "请在需要一次缓存多个字节串口数据处调用此函数,串口数据由MCU_SDK处理,用户请勿再另行处理,完成后删除该行" 
+    //#error "请在需要一次缓存多个字节串口数据处调用此函数,串口数据由MCU_SDK处理,用户请勿再另行处理,完成后删除该行" 
     
     unsigned short i = 0;
     for(i = 0; i < data_len; i++) {
@@ -711,7 +711,7 @@ void wifi_uart_service(void)
  */
 void wifi_protocol_init(void)
 {
-    #error " 请在main函数中添加wifi_protocol_init()完成wifi协议初始化,并删除该行"
+    //#error " 请在main函数中添加wifi_protocol_init()完成wifi协议初始化,并删除该行"
     rx_buf_in = (unsigned char *)wifi_uart_rx_buf;
     rx_buf_out = (unsigned char *)wifi_uart_rx_buf;
     
