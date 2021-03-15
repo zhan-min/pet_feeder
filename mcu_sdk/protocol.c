@@ -183,7 +183,9 @@ static unsigned char dp_download_meal_plan_handle(const unsigned char value[], u
 		rt_kprintf("meal_plan: ");
 		rt_kprintf("%c\r",value[i]);
 		rt_kprintf("\r\n");
-	}	
+	}
+	//写一个RAW型数据获取函数
+	//用获取的值更新本地的喂食计划
 	
 	//处理完DP数据后应有反馈
 	ret = mcu_dp_raw_update(DPID_MEAL_PLAN,value,length);
@@ -238,11 +240,7 @@ static unsigned char dp_download_manual_feed_handle(const unsigned char value[],
     unsigned long manual_feed;
     
     manual_feed = mcu_get_dp_download_value(value,length);
-    /*
-    //VALUE类型数据处理
-    
-    */
-	//这个数据不需要下发
+	//调用步进电机转动函数，将manual_feed作为参数传进去
     
     //处理完DP数据后应有反馈
     ret = mcu_dp_value_update(DPID_MANUAL_FEED,manual_feed);
@@ -269,10 +267,10 @@ static unsigned char dp_download_export_calibrate_handle(const unsigned char val
     export_calibrate = mcu_get_dp_download_bool(value,length);
     if(export_calibrate == 0) {
         //开关关
-			rt_kprintf("储量校准关闭");
+			rt_kprintf("出粮校准关闭");
     }else {
         //开关开
-			rt_kprintf("储量校准打开");
+			rt_kprintf("出粮校准打开");
     }
   
     //处理完DP数据后应有反馈
@@ -297,11 +295,7 @@ static unsigned char dp_download_voice_times_handle(const unsigned char value[],
     unsigned long voice_times;
     
     voice_times = mcu_get_dp_download_value(value,length);
-    /*
-    //VALUE类型数据处理
-    
-    */
-	//这个也不需要下发
+    //播放喂食提醒语音
     
     //处理完DP数据后应有反馈
     ret = mcu_dp_value_update(DPID_VOICE_TIMES,voice_times);
