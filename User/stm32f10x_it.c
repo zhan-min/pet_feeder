@@ -5,6 +5,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "bsp_usart.h"
 #include "mcu_api.h"
+#include "run.h"
 
 
 // 串口中断服务函数
@@ -19,20 +20,10 @@ void DEBUG_USART_IRQHandler(void)
 }
 
 
-/**
-  * @brief  SW的中断处理函数，按SW进入设置状态。
-  * @param  None
-  * @retval None
-  */
-void EXTI2_IRQHandler(void)
-{
-		
-}
-
 
 
 /**
-  * @brief  This function handles KEY1 interrupt request.
+  * @brief  This function handles KEY1 interrupt request.快速喂食中断
   * @param  None
   * @retval None
   */
@@ -41,7 +32,9 @@ void EXTI0_IRQHandler(void)
 	if(EXTI_GetITStatus(EXTI_Line0) != RESET)
 	{
 		rt_interrupt_enter();
-				
+		
+		rt_sem_release(quick_feed_sem);
+		
 		rt_interrupt_leave();
 	}
 	EXTI_ClearITPendingBit(EXTI_Line0);

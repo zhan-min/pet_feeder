@@ -130,6 +130,16 @@ void step_motor_reverse(uint8_t n)
 		step_motor_rotate_1();
 	}	
 }
-	
+
+/**
+  * @brief  宠物喂食器喂食接口函数，喂食n份
+	* @param  n:喂食份数
+  * @retval 无
+  */
+void feed(uint8_t n)
+{
+	step_motor_forward(n);
+}
+
 
 

@@ -23,6 +23,8 @@ void step_motor_offline(void);
 void step_motor_forward(uint8_t n);
 void step_motor_reverse(uint8_t n);
 
+void feed(uint8_t n);
+
 
 #endif /* __BSP_STEPPER_MOTOR_H */
 

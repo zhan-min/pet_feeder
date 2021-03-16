@@ -28,9 +28,11 @@
 3:请勿在中断/定时器中断内调用上报函数
 ******************************************************************************/
 
+#include "run.h"
 #include "wifi.h"
 #include "bsp_usart.h"
 #include "rtthread.h"
+#include "bsp_stepper_motor.h"
 
 
 uint8_t meal_plan[] = "0112320c01";//喂食计划
@@ -210,12 +212,13 @@ static unsigned char dp_download_quick_feed_handle(const unsigned char value[], 
     unsigned char quick_feed;
     
     quick_feed = mcu_get_dp_download_bool(value,length);
-    if(quick_feed == 0) {
+    if(quick_feed == 0)
+		{
         //开关关
-			rt_kprintf("quick_feed_close");
+			quick_feed_enable = DISABLE;
     }else {
         //开关开
-			rt_kprintf("quick_feed_open");
+			quick_feed_enable = ENABLE;
     }
   
     //处理完DP数据后应有反馈
@@ -235,19 +238,20 @@ static unsigned char dp_download_quick_feed_handle(const unsigned char value[], 
 *****************************************************************************/
 static unsigned char dp_download_manual_feed_handle(const unsigned char value[], unsigned short length)
 {
-    //示例:当前DP类型为VALUE
-    unsigned char ret;
-    unsigned long manual_feed;
-    
-    manual_feed = mcu_get_dp_download_value(value,length);
-	//调用步进电机转动函数，将manual_feed作为参数传进去
-    
-    //处理完DP数据后应有反馈
-    ret = mcu_dp_value_update(DPID_MANUAL_FEED,manual_feed);
-    if(ret == SUCCESS)
-        return SUCCESS;
-    else
-        return ERROR;
+	//示例:当前DP类型为VALUE
+	unsigned char ret;
+	unsigned long manual_feed;
+	
+	manual_feed = mcu_get_dp_download_value(value,length);
+	
+	feed(manual_feed);
+	
+	//处理完DP数据后应有反馈
+	ret = mcu_dp_value_update(DPID_MANUAL_FEED,manual_feed);
+	if(ret == SUCCESS)
+			return SUCCESS;
+	else
+			return ERROR;
 }
 /*****************************************************************************
 函数名称 : dp_download_export_calibrate_handle
@@ -265,12 +269,15 @@ static unsigned char dp_download_export_calibrate_handle(const unsigned char val
     unsigned char export_calibrate;
     
     export_calibrate = mcu_get_dp_download_bool(value,length);
-    if(export_calibrate == 0) {
+    if(export_calibrate == 0) 
+		{
         //开关关
-			rt_kprintf("出粮校准关闭");
-    }else {
+			step_motor_enable();
+    }
+		else
+		{
         //开关开
-			rt_kprintf("出粮校准打开");
+			step_motor_offline();
     }
   
     //处理完DP数据后应有反馈
