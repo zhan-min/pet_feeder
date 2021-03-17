@@ -66,7 +66,7 @@ void *my_memcpy(void *dest, const void *src, unsigned short count);
  * @param[in] {src} 源地址
  * @return 数据处理完后的源地址
  */
-char *my_strcpy(char *dest, const char *src);
+char *my_strcpy(char *dest, const unsigned char *src);
 
 /**
  * @brief  字符串比较

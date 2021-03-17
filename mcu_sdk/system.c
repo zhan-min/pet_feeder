@@ -408,7 +408,7 @@ void data_handle(unsigned short offset)
     unsigned char result;
 
 #ifdef WEATHER_ENABLE
-    static unsigned char isWoSend = 0;                                          //是否已经打开过天气数据, 0:否  1:是
+    static unsigned char isWoSend = 1;                                          //是否已经打开过天气数据, 0:否  1:是
 #endif
 
 #ifdef WIFI_TEST_ENABLE

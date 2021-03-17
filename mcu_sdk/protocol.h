@@ -101,7 +101,7 @@ MCU自处理:
           MCU在需要处理复位wifi的地方调用mcu_api.c文件内的mcu_reset_wifi()函数,并可调用mcu_get_reset_wifi_flag()函数返回复位wifi结果
           或调用设置wifi模式mcu_api.c文件内的mcu_set_wifi_mode(WIFI_CONFIG_E mode)函数,并可调用mcu_get_wifi_work_state()函数返回设置wifi结果
 ******************************************************************************/
-//#define         WIFI_CONTROL_SELF_MODE                       //wifi自处理按键及LED指示灯;如为MCU外界按键/LED指示灯请关闭该宏
+#define         WIFI_CONTROL_SELF_MODE                       //wifi自处理按键及LED指示灯;如为MCU外界按键/LED指示灯请关闭该宏
 #ifdef          WIFI_CONTROL_SELF_MODE                      //模块自处理
   #define     WF_STATE_KEY            14                    //wifi模块状态指示按键，请根据实际GPIO管脚设置
   #define     WF_RESERT_KEY           0                     //wifi模块重置按键，请根据实际GPIO管脚设置
@@ -121,7 +121,7 @@ mcu在wifi模块正确联网后可调用mcu_get_system_time()函数发起校时�
 并在protocol.c文件wifi_test_result函数内查看测试结果,
 wifi_test_result内部有#err提示,完成函数后请删除该#err
 ******************************************************************************/
-#define         WIFI_TEST_ENABLE                //开启WIFI产测功能（扫描指定路由）
+//#define         WIFI_TEST_ENABLE                //开启WIFI产测功能（扫描指定路由）
 
 /******************************************************************************
                       7:是否开启天气功能

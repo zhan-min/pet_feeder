@@ -593,14 +593,17 @@ void weather_open_return_handle(unsigned char res, unsigned char err)
     //#error "请自行完成打开天气功能返回数据处理代码,完成后请删除该行"
     unsigned char err_num = 0;
     
-    if(res == 1) {
+    if(res == 1)
+		{
         //打开天气返回成功
-			rt_kprintf("打开天气返回成功");
-    }else if(res == 0) {
+			rt_kprintf("打开天气成功");
+    }
+		else if(res == 0)
+		{
         //打开天气返回失败
         //获取错误码
-			rt_kprintf("打开天气返回失败");
-        err_num = err; 
+      err_num = err; 
+			rt_kprintf("打开天气失败，错误代码：%d", err_num);
     }
 }
 
@@ -619,7 +622,6 @@ void weather_open_return_handle(unsigned char res, unsigned char err)
  */
 void weather_data_user_handle(char *name, unsigned char type, const unsigned char *data, char day)
 {
-    //#error "这里仅给出示例，请自行完善天气数据处理代码,完成后请删除该行"
     int value_int;
     char value_string[50];//由于有的参数内容较多，这里默认为50。您可以根据定义的参数，可以适当减少该值
     
@@ -634,13 +636,13 @@ void weather_data_user_handle(char *name, unsigned char type, const unsigned cha
     
     //注意要根据所选参数类型来获得参数值！！！
     if(my_strcmp(name, "temp") == 0) {
-        printf("day:%d temp value is:%d\r\n", day, value_int);          //int 型
+        rt_kprintf("day:%d temp value is:%d\r\n", day, value_int);          //int 型
     }else if(my_strcmp(name, "humidity") == 0) {
-        printf("day:%d humidity value is:%d\r\n", day, value_int);      //int 型
+        rt_kprintf("day:%d humidity value is:%d\r\n", day, value_int);      //int 型
     }else if(my_strcmp(name, "pm25") == 0) {
-        printf("day:%d pm25 value is:%d\r\n", day, value_int);          //int 型
+        rt_kprintf("day:%d pm25 value is:%d\r\n", day, value_int);          //int 型
     }else if(my_strcmp(name, "condition") == 0) {
-        printf("day:%d condition value is:%s\r\n", day, value_string);  //string 型
+        rt_kprintf("day:%d condition value is:%s\r\n", day, value_string);  //string 型
     }
 }
 #endif
