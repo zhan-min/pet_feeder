@@ -16,6 +16,12 @@
 #include "stm32f10x.h"
 #include "bsp_led.h"
 #include "bsp_usart.h"
+#include "wifi.h"
+#include "bsp_stepper_motor.h"
+#include "bsp_hx711_granary.h"
+#include "bsp_hx711_export.h"
+#include "bsp_key_exti.h"
+
 
 #if defined(RT_USING_USER_MAIN) && defined(RT_USING_HEAP)
 #define RT_HEAP_SIZE 1024
@@ -38,9 +44,14 @@ void rt_hw_board_init()
 {
   /* ≥ı ºªØSysTick */
   SysTick_Config( SystemCoreClock / RT_TICK_PER_SECOND );	
-	
+	LED2_ON;
 	USART_Config();
+	wifi_protocol_init();
 	LED_GPIO_Config();
+	STEP_MOTOR_GPIO_Config();
+	EXTI_Key_Config();
+	HX711_EXPORT_GPIO_Config();
+	HX711_GRANARY_GPIO_Config();
 	
 	
     /* Call components board initial (use INIT_BOARD_EXPORT()) */

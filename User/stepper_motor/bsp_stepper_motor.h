@@ -13,12 +13,17 @@
 #define STEP_MOTOR_PLUSE_GPIO_CLK      RCC_APB2Periph_GPIOA
 
 #define STEP_MOTOR_OFFLINE_GPIO_PORT   GPIOA
-#define STEP_MOTOR_OFFLINE_GPIO_PIN    GPIO_Pin_8
+#define STEP_MOTOR_OFFLINE_GPIO_PIN    GPIO_Pin_4
 #define STEP_MOTOR_OFFLINE_GPIO_CLK    RCC_APB2Periph_GPIOA
 
 
+void STEP_MOTOR_GPIO_Config(void);
+
 void step_motor_enable(void);
 void step_motor_offline(void);
+
+void set_dir_forward(void);
+void set_dir_reverse(void);
 
 void step_motor_forward(uint8_t n);
 void step_motor_reverse(uint8_t n);

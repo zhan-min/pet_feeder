@@ -69,7 +69,7 @@ void step_motor_offline(void)
   * @param  无
   * @retval 无
   */
-static void set_dir_forward(void)
+void set_dir_forward(void)
 {
 	GPIO_SetBits(STEP_MOTOR_DIR_GPIO_PORT, STEP_MOTOR_DIR_GPIO_PIN);
 }
@@ -79,7 +79,7 @@ static void set_dir_forward(void)
   * @param  无
   * @retval 无
   */
-static void set_dir_reverse(void)
+void set_dir_reverse(void)
 {
 	GPIO_ResetBits(STEP_MOTOR_DIR_GPIO_PORT, STEP_MOTOR_DIR_GPIO_PIN);
 }

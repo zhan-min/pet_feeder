@@ -6,7 +6,7 @@
 #if defined(__CC_ARM) || defined(__CLANG_ARM)
 //#include "RTE_Components.h"
 
-#define RT_USING_FINSH
+//#define RT_USING_FINSH
 
 
 #endif //(__CC_ARM) || (__CLANG_ARM)
@@ -133,7 +133,6 @@
     // <o>the priority of finsh thread <1-7>
     //  <i>the priority of finsh thread
     //  <i>Default: 6
-    #define __FINSH_THREAD_PRIORITY     5
     #define FINSH_THREAD_PRIORITY       2
 		//(RT_THREAD_PRIORITY_MAX / 8 * __FINSH_THREAD_PRIORITY + 1)
     // <o>the stack of finsh thread <1-4096>

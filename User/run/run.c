@@ -68,6 +68,7 @@ void granary_weight(void* parameter)
 	uint32_t tem, granary_weight = 0;
 	while(1)
 	{
+		LED2_ON;
 		tem = hx711_granary_read() - granary_peel;
 		if(tem - granary_weight > 50)
 		{
@@ -131,6 +132,7 @@ void tuya_wifi_uart_service(void* parameter)
 {
 	while(1)
 	{
+		LED2_TOGGLE;
 		rt_thread_delay(50);
 		wifi_uart_service();
 	}	
@@ -165,16 +167,16 @@ void Run(void)
 	
 	/**********创建线程************/
 	
-	granary_weight_thread =                                   /* 线程控制块指针 */
-							rt_thread_create( "granary_weight",           /* 线程名字 */
-																granary_weight,             /* 线程入口函数 */
-																RT_NULL,               /* 线程入口函数参数 */
-																512,                   /* 线程栈大小 */
-																6,                     /* 线程的优先级 */
-																20);                   /* 线程时间片 */
-	
-	if (granary_weight_thread != RT_NULL) 
-        rt_thread_startup(granary_weight_thread);
+//	granary_weight_thread =                                   /* 线程控制块指针 */
+//							rt_thread_create( "granary_weight",           /* 线程名字 */
+//																granary_weight,             /* 线程入口函数 */
+//																RT_NULL,               /* 线程入口函数参数 */
+//																512,                   /* 线程栈大小 */
+//																6,                     /* 线程的优先级 */
+//																20);                   /* 线程时间片 */
+//	
+//	if (granary_weight_thread != RT_NULL) 
+//        rt_thread_startup(granary_weight_thread);
 	
 	export_weight_thread =                                   /* 线程控制块指针 */
 							rt_thread_create( "export_weight",           /* 线程名字 */
