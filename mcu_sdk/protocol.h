@@ -278,15 +278,21 @@ BLE_test_result内部有#err提示,完成函数后请删除该#err
 //出粮校准(可下发可上报)
 //备注:
 #define DPID_EXPORT_CALIBRATE 7
-//喂食结果上报(只上报)
+//余粮校准(可下发可上报)
 //备注:
-#define DPID_FEED_REPORT 15
+#define DPID_WEIGHT_CALIBRATE 8
+//粮桶余粮(只上报)
+//备注:
+#define DPID_SURPLUS_GRAIN 16
+//余粮重量(只上报)
+//备注:
+#define DPID_WEIGHT 17
 //语音播放次数(可下发可上报)
 //备注:
 #define DPID_VOICE_TIMES 18
-//开关(可下发可上报)
-//备注:旋转食盒类宠物喂食器专用
-#define DPID_SWITCH 20
+//小夜灯(可下发可上报)
+//备注:
+#define DPID_LIGHT 19
 
 
 

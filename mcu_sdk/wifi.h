@@ -20,7 +20,7 @@
 #ifndef __WIFI_H_
 #define __WIFI_H_
 
-//#include "stm32f1xx.h"
+#include "stm32f10x.h"
 #include "stdio.h"
 #include "string.h"
 #include "protocol.h"
@@ -44,10 +44,14 @@
 #define         NULL             ((void *) 0)
 #endif
 
+
+#ifndef ERROR
+#define         ERROR            0
+#endif
+
 #ifndef INVALID
 #define         INVALID          0xFF
 #endif
-
 
 //=============================================================================
 //dp数据点类型

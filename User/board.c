@@ -1,34 +1,25 @@
 /*
-*************************************************************************
-*                             包含的头文件
-*************************************************************************
-*/
-/* STM32 固件库头文件 */
-#include "stm32f10x.h"
-
-/* 开发板硬件bsp头文件 */
-#include "board.h" 
-#include "wifi.h"
-
-/*旧版本，看情况选用或删除*/
-#include "bsp_ili9341_lcd.h"
-#include "bsp_adc.h"
-#include "delay.h"
-#include "bsp_led.h"
-#include "bsp_usart.h"
-#include "bsp_key_exti.h"
-#include "run.h"
-
-/* RT-Thread相关头文件 */
+ * Copyright (c) 2006-2019, RT-Thread Development Team
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Change Logs:
+ * Date           Author       Notes
+ * 2017-07-24     Tanek        the first version
+ * 2018-11-12     Ernest Chen  modify copyright
+ */
+ 
+#include <stdint.h>
 #include <rthw.h>
 #include <rtthread.h>
 
-
+#include "stm32f10x.h"
+#include "bsp_led.h"
+#include "bsp_usart.h"
 
 #if defined(RT_USING_USER_MAIN) && defined(RT_USING_HEAP)
 #define RT_HEAP_SIZE 1024
-/* 从内部SRAM里面分配一部分静态内存来作为rtt的堆空间，这里配置为4KB */
-static uint32_t rt_heap[RT_HEAP_SIZE];
+static uint32_t rt_heap[RT_HEAP_SIZE];     // heap default size: 4K(1024 * 4)
 RT_WEAK void *rt_heap_begin_get(void)
 {
     return rt_heap;
@@ -41,74 +32,37 @@ RT_WEAK void *rt_heap_end_get(void)
 #endif
 
 /**
-  * @brief  开发板硬件初始化函数
-  * @param  无
-  * @retval 无
-  *
-  * @attention
-  * RTT把开发板相关的初始化函数统一放到board.c文件中实现，
-  * 当然，你想把这些函数统一放到main.c文件也是可以的。
-  */
+ * This function will initial your board.
+ */
 void rt_hw_board_init()
 {
   /* 初始化SysTick */
   SysTick_Config( SystemCoreClock / RT_TICK_PER_SECOND );	
-  
-	/* 硬件BSP初始化统统放在这里，比如LED，串口，LCD等 */
+	
 	USART_Config();
-	wifi_protocol_init();
-	
-	/*旧版本，看情况选用或删除*/
-	ILI9341_Init ();//LCD 初始化
 	LED_GPIO_Config();
-	LED2_ON;
-	ADCx_Init();
-  EXTI_Key_Config();
-	
-	//其中0、3、5、6 模式适合从左至右显示文字，
-	//不推荐使用其它模式显示文字	其它模式显示文字会有镜像效果			
-	//其中 6 模式为大部分液晶例程的默认显示方向  
-  ILI9341_GramScan ( 3 );
-	LCD_SetColors(WHITE, BLACK);
-	ILI9341_Clear(0,0,LCD_X_LENGTH,LCD_Y_LENGTH);
 	
 	
-/* 调用组件初始化函数 (use INIT_BOARD_EXPORT()) */
+    /* Call components board initial (use INIT_BOARD_EXPORT()) */
 #ifdef RT_USING_COMPONENTS_INIT
     rt_components_board_init();
 #endif
-    
-#if defined(RT_USING_CONSOLE) && defined(RT_USING_DEVICE)
-	rt_console_set_device(RT_CONSOLE_DEVICE_NAME);
-#endif
-    
+
 #if defined(RT_USING_USER_MAIN) && defined(RT_USING_HEAP)
     rt_system_heap_init(rt_heap_begin_get(), rt_heap_end_get());
 #endif
 }
 
-/**
-  * @brief  SysTick中断服务函数
-  * @param  无
-  * @retval 无
-  *
-  * @attention
-  * SysTick中断服务函数在固件库文件stm32f10x_it.c中也定义了，而现在
-  * 在board.c中又定义一次，那么编译的时候会出现重复定义的错误，解决
-  * 方法是可以把stm32f10x_it.c中的注释或者删除即可。
-  */
 void SysTick_Handler(void)
 {
-    /* 进入中断 */
+    /* enter interrupt */
     rt_interrupt_enter();
 
-    /* 更新时基 */
     rt_tick_increase();
 
-    /* 离开中断 */
+    /* leave interrupt */
     rt_interrupt_leave();
 }
-
 
 
 /**
@@ -142,3 +96,33 @@ void rt_hw_console_output(const char *str)
 	/* 退出临界段 */
     rt_exit_critical();
 }
+
+
+/**
+  * @brief  为finsh提供控制台读入接口
+  *   Note：DEBUG_USARTx是在bsp_usart.h中定义的宏，默认使用串口1
+  * @param  str：要输出到串口的字符串
+  * @retval 无
+  *
+  * @attention
+  * 
+  */
+char rt_hw_console_getchar(void)
+{
+	int ch = -1;
+	
+	if( USART_GetFlagStatus(DEBUG_USARTx, USART_FLAG_RXNE) != RESET )
+	{
+		ch = (int)USART_ReceiveData(DEBUG_USARTx);
+	}
+	else
+	{
+		if( USART_GetFlagStatus(DEBUG_USARTx, USART_FLAG_ORE) != RESET )
+		{
+			USART_ClearFlag(DEBUG_USARTx, USART_FLAG_TC);
+		}
+		rt_thread_delay(10);
+	}
+	return ch;
+}
+

@@ -111,8 +111,8 @@
         <DllOption>
           <SimDllName>SARMCM3.DLL</SimDllName>
           <SimDllArguments>-REMAP</SimDllArguments>
-          <SimDlgDll>DCM.DLL</SimDlgDll>
-          <SimDlgDllArguments>-pCM3</SimDlgDllArguments>
+          <SimDlgDll>DARMSTM.DLL</SimDlgDll>
+          <SimDlgDllArguments>-pSTM32F103VE</SimDlgDllArguments>
           <TargetDllName>SARMCM3.DLL</TargetDllName>
           <TargetDllArguments></TargetDllArguments>
           <TargetDlgDll>TCM.DLL</TargetDlgDll>
@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER,STM32F10X_HD</Define>
               <Undefine></Undefine>
-              <IncludePath>..\Libraries\CMSIS;..\Libraries\STM32F10x_StdPeriph_Driver\inc;..\User;..\User\usart;..\User\adc;..\User\lcd;..\User\Led;..\User\key_exti;..\rtthread\src;..\rtthread\libcpu\arm\cortex-m3;..\rtthread\include;..\User\Delay;..\User\run;..\mcu_sdk;..\User\stepper_motor</IncludePath>
+              <IncludePath>..\Libraries\CMSIS;..\Libraries\STM32F10x_StdPeriph_Driver\inc;..\User;..\User\usart;..\User\adc;..\User\lcd;..\User\Led;..\User\key_exti;..\User\Delay;..\User\run;..\mcu_sdk;..\User\stepper_motor;..\rtthread\components\finsh;..\rtthread\include\libc;..\rtthread\include;..\User\light;..\User\hx711</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -543,11 +543,6 @@
               <FilePath>..\User\usart\bsp_usart.c</FilePath>
             </File>
             <File>
-              <FileName>bsp_ili9341_lcd.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\User\lcd\bsp_ili9341_lcd.c</FilePath>
-            </File>
-            <File>
               <FileName>fonts.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\User\font\fonts.c</FilePath>
@@ -587,6 +582,26 @@
               <FileType>1</FileType>
               <FilePath>..\User\stepper_motor\bsp_stepper_motor.c</FilePath>
             </File>
+            <File>
+              <FileName>rtconfig.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\User\rtconfig.h</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_light.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\light\bsp_light.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_hx711_export.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\hx711\bsp_hx711_export.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_hx711_granary.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\hx711\bsp_hx711_granary.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -600,7 +615,27 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>rtt/source</GroupName>
+          <GroupName>SDK</GroupName>
+          <Files>
+            <File>
+              <FileName>mcu_api.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\mcu_sdk\mcu_api.c</FilePath>
+            </File>
+            <File>
+              <FileName>protocol.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\mcu_sdk\protocol.c</FilePath>
+            </File>
+            <File>
+              <FileName>system.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\mcu_sdk\system.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>rtt/Kernel</GroupName>
           <Files>
             <File>
               <FileName>clock.c</FileName>
@@ -613,9 +648,9 @@
               <FilePath>..\rtthread\src\components.c</FilePath>
             </File>
             <File>
-              <FileName>device.c</FileName>
+              <FileName>cpu.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\rtthread\src\device.c</FilePath>
+              <FilePath>..\rtthread\src\cpu.c</FilePath>
             </File>
             <File>
               <FileName>idle.c</FileName>
@@ -663,9 +698,9 @@
               <FilePath>..\rtthread\src\scheduler.c</FilePath>
             </File>
             <File>
-              <FileName>signal.c</FileName>
+              <FileName>slab.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\rtthread\src\signal.c</FilePath>
+              <FilePath>..\rtthread\src\slab.c</FilePath>
             </File>
             <File>
               <FileName>thread.c</FileName>
@@ -680,37 +715,37 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>rtt/ports</GroupName>
+          <GroupName>rtt/Ports</GroupName>
           <Files>
-            <File>
-              <FileName>cpuport.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\rtthread\libcpu\arm\cortex-m3\cpuport.c</FilePath>
-            </File>
             <File>
               <FileName>context_rvds.S</FileName>
               <FileType>2</FileType>
               <FilePath>..\rtthread\libcpu\arm\cortex-m3\context_rvds.S</FilePath>
             </File>
+            <File>
+              <FileName>cpuport.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\rtthread\libcpu\arm\cortex-m3\cpuport.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
-          <GroupName>SDK</GroupName>
+          <GroupName>rtt/Finsh</GroupName>
           <Files>
             <File>
-              <FileName>mcu_api.c</FileName>
+              <FileName>cmd.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\mcu_sdk\mcu_api.c</FilePath>
+              <FilePath>..\rtthread\components\finsh\cmd.c</FilePath>
             </File>
             <File>
-              <FileName>protocol.c</FileName>
+              <FileName>msh.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\mcu_sdk\protocol.c</FilePath>
+              <FilePath>..\rtthread\components\finsh\msh.c</FilePath>
             </File>
             <File>
-              <FileName>system.c</FileName>
+              <FileName>shell.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\mcu_sdk\system.c</FilePath>
+              <FilePath>..\rtthread\components\finsh\shell.c</FilePath>
             </File>
           </Files>
         </Group>

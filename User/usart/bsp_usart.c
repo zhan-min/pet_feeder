@@ -22,24 +22,24 @@
   * @param  无
   * @retval 无
   */
-static void NVIC_Configuration(void)
-{
-  NVIC_InitTypeDef NVIC_InitStructure;
-  
-  /* 嵌套向量中断控制器组选择 */
-  NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
-  
-  /* 配置USART为中断源 */
-  NVIC_InitStructure.NVIC_IRQChannel = DEBUG_USART_IRQ;
-  /* 抢断优先级*/
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
-  /* 子优先级 */
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
-  /* 使能中断 */
-  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-  /* 初始化配置NVIC */
-  NVIC_Init(&NVIC_InitStructure);
-}
+//static void NVIC_Configuration(void)
+//{
+//  NVIC_InitTypeDef NVIC_InitStructure;
+//  
+//  /* 嵌套向量中断控制器组选择 */
+//  NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
+//  
+//  /* 配置USART为中断源 */
+//  NVIC_InitStructure.NVIC_IRQChannel = DEBUG_USART_IRQ;
+//  /* 抢断优先级*/
+//  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+//  /* 子优先级 */
+//  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+//  /* 使能中断 */
+//  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+//  /* 初始化配置NVIC */
+//  NVIC_Init(&NVIC_InitStructure);
+//}
 
  /**
   * @brief  USART GPIO 配置,工作参数配置
@@ -86,10 +86,10 @@ void USART_Config(void)
 	USART_Init(DEBUG_USARTx, &USART_InitStructure);
 	
 	// 串口中断优先级配置
-	NVIC_Configuration();
+	//NVIC_Configuration();
 	
 	// 使能串口接收中断
-	USART_ITConfig(DEBUG_USARTx, USART_IT_RXNE, ENABLE);	
+	//USART_ITConfig(DEBUG_USARTx, USART_IT_RXNE, ENABLE);	
 	
 	// 使能串口
 	USART_Cmd(DEBUG_USARTx, ENABLE);	    

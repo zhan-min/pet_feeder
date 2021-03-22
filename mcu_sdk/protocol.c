@@ -29,14 +29,17 @@
 ******************************************************************************/
 
 #include "run.h"
+#include "rtthread.h"
+#include "wifi.h"
 #include "wifi.h"
 #include "bsp_usart.h"
-#include "rtthread.h"
 #include "bsp_stepper_motor.h"
+#include "bsp_light.h"
+#include "bsp_hx711_export.h"
+#include "bsp_hx711_granary.h"
 
 
 uint8_t meal_plan[] = "0112320c01";//喂食计划
-
 
 
 #ifdef WEATHER_ENABLE
@@ -91,9 +94,11 @@ const DOWNLOAD_CMD_S download_cmd[] =
   {DPID_MANUAL_FEED, DP_TYPE_VALUE},
   {DPID_FEED_STATE, DP_TYPE_ENUM},
   {DPID_EXPORT_CALIBRATE, DP_TYPE_BOOL},
-  {DPID_FEED_REPORT, DP_TYPE_VALUE},
+  {DPID_WEIGHT_CALIBRATE, DP_TYPE_BOOL},
+  {DPID_SURPLUS_GRAIN, DP_TYPE_VALUE},
+  {DPID_WEIGHT, DP_TYPE_VALUE},
   {DPID_VOICE_TIMES, DP_TYPE_VALUE},
-  {DPID_SWITCH, DP_TYPE_BOOL},
+  {DPID_LIGHT, DP_TYPE_BOOL},
 };
 
 
@@ -110,8 +115,8 @@ const DOWNLOAD_CMD_S download_cmd[] =
  */
 void uart_transmit_output(unsigned char value)
 {
-	Usart_SendByte( DEBUG_USARTx, value);
- 
+    //#error "请将MCU串口发送函数填入该函数,并删除该行"
+    Usart_SendByte( DEBUG_USARTx, value);
 /*
     //Example:
     extern void Uart_PutChar(unsigned char value);
@@ -145,16 +150,18 @@ void uart_transmit_output(unsigned char value)
  */
 void all_data_update(void)
 {
+    //#error "请在此处理可下发可上报数据及只上报数据示例,处理完成后删除该行"
     //此代码为平台自动生成，请按照实际数据修改每个可下发可上报函数和只上报函数
     mcu_dp_raw_update(DPID_MEAL_PLAN, meal_plan, 5); //RAW型数据上报;
     mcu_dp_bool_update(DPID_QUICK_FEED, 0); //BOOL型数据上报;
     mcu_dp_value_update(DPID_MANUAL_FEED, 0); //VALUE型数据上报;
     mcu_dp_enum_update(DPID_FEED_STATE, 0); //枚举型数据上报;
     mcu_dp_bool_update(DPID_EXPORT_CALIBRATE, 0); //BOOL型数据上报;
-    mcu_dp_value_update(DPID_FEED_REPORT, 0); //VALUE型数据上报;
-    mcu_dp_value_update(DPID_VOICE_TIMES,1); //VALUE型数据上报;
-    mcu_dp_bool_update(DPID_SWITCH,0); //BOOL型数据上报;
-
+    mcu_dp_bool_update(DPID_WEIGHT_CALIBRATE, 0); //BOOL型数据上报;
+    mcu_dp_value_update(DPID_SURPLUS_GRAIN, 0); //VALUE型数据上报;
+    mcu_dp_value_update(DPID_WEIGHT, 0); //VALUE型数据上报;
+    mcu_dp_value_update(DPID_VOICE_TIMES, 0); //VALUE型数据上报;
+    mcu_dp_bool_update(DPID_LIGHT, 0); //BOOL型数据上报;
 }
 
 
@@ -175,10 +182,7 @@ static unsigned char dp_download_meal_plan_handle(const unsigned char value[], u
 {
 	//示例:当前DP类型为RAW
 	unsigned char ret;
-	/*
-	//RAW类型数据处理    
-	*/
-	
+	//RAW类型数据处理
 	//先把接收的数据打印出来看看
 	for(uint8_t i=0; i<length; i++)
 	{
@@ -186,8 +190,6 @@ static unsigned char dp_download_meal_plan_handle(const unsigned char value[], u
 		rt_kprintf("%c\r",value[i]);
 		rt_kprintf("\r\n");
 	}
-	//写一个RAW型数据获取函数
-	//用获取的值更新本地的喂食计划
 	
 	//处理完DP数据后应有反馈
 	ret = mcu_dp_raw_update(DPID_MEAL_PLAN,value,length);
@@ -215,10 +217,9 @@ static unsigned char dp_download_quick_feed_handle(const unsigned char value[], 
     if(quick_feed == 0)
 		{
         //开关关
-			quick_feed_enable = DISABLE;
     }else {
         //开关开
-			quick_feed_enable = ENABLE;
+			feed(1);
     }
   
     //处理完DP数据后应有反馈
@@ -238,20 +239,19 @@ static unsigned char dp_download_quick_feed_handle(const unsigned char value[], 
 *****************************************************************************/
 static unsigned char dp_download_manual_feed_handle(const unsigned char value[], unsigned short length)
 {
-	//示例:当前DP类型为VALUE
-	unsigned char ret;
-	unsigned long manual_feed;
-	
-	manual_feed = mcu_get_dp_download_value(value,length);
-	
-	feed(manual_feed);
-	
-	//处理完DP数据后应有反馈
-	ret = mcu_dp_value_update(DPID_MANUAL_FEED,manual_feed);
-	if(ret == SUCCESS)
-			return SUCCESS;
-	else
-			return ERROR;
+    //示例:当前DP类型为VALUE
+    unsigned char ret;
+    unsigned long manual_feed;
+    
+    manual_feed = mcu_get_dp_download_value(value,length);
+    //VALUE类型数据处理
+    feed(manual_feed);
+    //处理完DP数据后应有反馈
+    ret = mcu_dp_value_update(DPID_MANUAL_FEED,manual_feed);
+    if(ret == SUCCESS)
+        return SUCCESS;
+    else
+        return ERROR;
 }
 /*****************************************************************************
 函数名称 : dp_download_export_calibrate_handle
@@ -271,17 +271,48 @@ static unsigned char dp_download_export_calibrate_handle(const unsigned char val
     export_calibrate = mcu_get_dp_download_bool(value,length);
     if(export_calibrate == 0) 
 		{
-        //开关关
-			step_motor_enable();
+      //开关关
     }
 		else
 		{
-        //开关开
-			step_motor_offline();
+      export_peel = hx711_export_read();
     }
   
     //处理完DP数据后应有反馈
     ret = mcu_dp_bool_update(DPID_EXPORT_CALIBRATE,export_calibrate);
+    if(ret == SUCCESS)
+        return SUCCESS;
+    else
+        return ERROR;
+}
+/*****************************************************************************
+函数名称 : dp_download_weight_calibrate_handle
+功能描述 : 针对DPID_WEIGHT_CALIBRATE的处理函数
+输入参数 : value:数据源数据
+        : length:数据长度
+返回参数 : 成功返回:SUCCESS/失败返回:ERROR
+使用说明 : 可下发可上报类型,需要在处理完数据后上报处理结果至app
+*****************************************************************************/
+static unsigned char dp_download_weight_calibrate_handle(const unsigned char value[], unsigned short length)
+{
+    //示例:当前DP类型为BOOL
+    unsigned char ret;
+    //0:关/1:开
+    unsigned char weight_calibrate;
+    
+    weight_calibrate = mcu_get_dp_download_bool(value,length);
+    if(weight_calibrate == 0)
+		{
+        //开关关
+    }
+		else
+		{
+        //开关开
+			granary_peel = hx711_granary_read();
+    }
+  
+    //处理完DP数据后应有反馈
+    ret = mcu_dp_bool_update(DPID_WEIGHT_CALIBRATE,weight_calibrate);
     if(ret == SUCCESS)
         return SUCCESS;
     else
@@ -302,7 +333,8 @@ static unsigned char dp_download_voice_times_handle(const unsigned char value[],
     unsigned long voice_times;
     
     voice_times = mcu_get_dp_download_value(value,length);
-    //播放喂食提醒语音
+    //VALUE类型数据处理
+		//设置语音播放的次数
     
     //处理完DP数据后应有反馈
     ret = mcu_dp_value_update(DPID_VOICE_TIMES,voice_times);
@@ -312,31 +344,31 @@ static unsigned char dp_download_voice_times_handle(const unsigned char value[],
         return ERROR;
 }
 /*****************************************************************************
-函数名称 : dp_download_switch_handle
-功能描述 : 针对DPID_SWITCH的处理函数
+函数名称 : dp_download_light_handle
+功能描述 : 针对DPID_LIGHT的处理函数
 输入参数 : value:数据源数据
         : length:数据长度
 返回参数 : 成功返回:SUCCESS/失败返回:ERROR
 使用说明 : 可下发可上报类型,需要在处理完数据后上报处理结果至app
 *****************************************************************************/
-static unsigned char dp_download_switch_handle(const unsigned char value[], unsigned short length)
+static unsigned char dp_download_light_handle(const unsigned char value[], unsigned short length)
 {
     //示例:当前DP类型为BOOL
     unsigned char ret;
     //0:关/1:开
-    unsigned char switch_1;
+    unsigned char light;
     
-    switch_1 = mcu_get_dp_download_bool(value,length);
-    if(switch_1 == 0) {
-        //开关关
-			rt_kprintf("pet_feeder_close");
-    }else {
-        //开关开
-			rt_kprintf("pet_feeder_open");
+    light = mcu_get_dp_download_bool(value,length);
+    if(light == 0)
+		{
+			LIGHT_OFF;
+    }else
+		{
+			LIGHT_ON;
     }
   
     //处理完DP数据后应有反馈
-    ret = mcu_dp_bool_update(DPID_SWITCH,switch_1);
+    ret = mcu_dp_bool_update(DPID_LIGHT,light);
     if(ret == SUCCESS)
         return SUCCESS;
     else
@@ -386,13 +418,17 @@ unsigned char dp_download_handle(unsigned char dpid,const unsigned char value[],
             //出粮校准处理函数
             ret = dp_download_export_calibrate_handle(value,length);
         break;
+        case DPID_WEIGHT_CALIBRATE:
+            //余粮校准处理函数
+            ret = dp_download_weight_calibrate_handle(value,length);
+        break;
         case DPID_VOICE_TIMES:
             //语音播放次数处理函数
             ret = dp_download_voice_times_handle(value,length);
         break;
-        case DPID_SWITCH:
-            //开关处理函数
-            ret = dp_download_switch_handle(value,length);
+        case DPID_LIGHT:
+            //小夜灯处理函数
+            ret = dp_download_light_handle(value,length);
         break;
 
         
@@ -529,7 +565,7 @@ void mcu_write_rtctime(unsigned char time[])
  */
 void wifi_test_result(unsigned char result,unsigned char rssi)
 {
-    //#error "请自行实现wifi功能测试成功/失败代码,完成后请删除该行"
+    #error "请自行实现wifi功能测试成功/失败代码,完成后请删除该行"
     if(result == 0) {
         //测试失败
         if(rssi == 0x00) {
@@ -570,6 +606,7 @@ void mcu_open_weather(void)
     buffer[0] = sprintf(buffer+1,"t.unix"); //格林时间   或使用  buffer[0] = sprintf(buffer+1,"t.local"); //本地时间
     send_len = set_wifi_uart_buffer(send_len, (unsigned char *)buffer, buffer[0]+1);
     */
+    
 		buffer[0] = sprintf(buffer+1,"t.local"); //本地时间
     send_len = set_wifi_uart_buffer(send_len, (unsigned char *)buffer, buffer[0]+1);
     
@@ -622,6 +659,7 @@ void weather_open_return_handle(unsigned char res, unsigned char err)
  */
 void weather_data_user_handle(char *name, unsigned char type, const unsigned char *data, char day)
 {
+    //#error "这里仅给出示例，请自行完善天气数据处理代码,完成后请删除该行"
     int value_int;
     char value_string[50];//由于有的参数内容较多，这里默认为50。您可以根据定义的参数，可以适当减少该值
     
@@ -636,13 +674,13 @@ void weather_data_user_handle(char *name, unsigned char type, const unsigned cha
     
     //注意要根据所选参数类型来获得参数值！！！
     if(my_strcmp(name, "temp") == 0) {
-        rt_kprintf("day:%d temp value is:%d\r\n", day, value_int);          //int 型
+        printf("day:%d temp value is:%d\r\n", day, value_int);          //int 型
     }else if(my_strcmp(name, "humidity") == 0) {
-        rt_kprintf("day:%d humidity value is:%d\r\n", day, value_int);      //int 型
+        printf("day:%d humidity value is:%d\r\n", day, value_int);      //int 型
     }else if(my_strcmp(name, "pm25") == 0) {
-        rt_kprintf("day:%d pm25 value is:%d\r\n", day, value_int);          //int 型
+        printf("day:%d pm25 value is:%d\r\n", day, value_int);          //int 型
     }else if(my_strcmp(name, "condition") == 0) {
-        rt_kprintf("day:%d condition value is:%s\r\n", day, value_string);  //string 型
+        printf("day:%d condition value is:%s\r\n", day, value_string);  //string 型
     }
 }
 #endif

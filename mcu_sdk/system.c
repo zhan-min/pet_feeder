@@ -20,7 +20,6 @@
 #define SYSTEM_GLOBAL
 
 #include "wifi.h"
-#include "stm32f10x.h"
 
 extern const DOWNLOAD_CMD_S download_cmd[];
 
