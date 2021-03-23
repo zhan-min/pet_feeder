@@ -103,7 +103,7 @@ MCU自处理:
 ******************************************************************************/
 #define         WIFI_CONTROL_SELF_MODE                       //wifi自处理按键及LED指示灯;如为MCU外界按键/LED指示灯请关闭该宏
 #ifdef          WIFI_CONTROL_SELF_MODE                      //模块自处理
-  #define     WF_STATE_KEY            14                    //wifi模块状态指示按键，请根据实际GPIO管脚设置
+  #define     WF_STATE_KEY            8                    //wifi模块状态指示按键，请根据实际GPIO管脚设置
   #define     WF_RESERT_KEY           0                     //wifi模块重置按键，请根据实际GPIO管脚设置
 #endif
 

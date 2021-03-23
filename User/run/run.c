@@ -22,8 +22,8 @@
 */
 
 //全局变量
-uint32_t granary_peel = 0;
-uint32_t export_peel  = 0;
+uint16_t granary_peel = 0;
+uint16_t export_peel  = 0;
 
 
 //消息队列
@@ -65,16 +65,28 @@ static rt_thread_t quick_feed_thread  = RT_NULL;
  */
 void granary_weight(void* parameter)
 {
-	uint32_t tem, granary_weight = 0;
+	uint32_t tem, granary_weight;
+	uint8_t granary_weight_percent;
 	while(1)
 	{
-		LED2_TOGGLE;
 		rt_thread_delay(50);
 		tem = hx711_granary_read() - granary_peel;
-		if(tem - granary_weight > 50)
+		
+
+		if(tem - granary_weight > full_granary/100)
 		{
 			granary_weight = tem;
-			mcu_dp_value_update(DPID_SURPLUS_GRAIN, granary_weight);
+			
+			if( granary_weight >= full_granary )
+			{
+				granary_weight_percent = 100;
+				mcu_dp_value_update(DPID_SURPLUS_GRAIN, granary_weight_percent);
+			}
+			else
+			{
+				granary_weight_percent = (granary_weight) / (full_granary/100);
+				mcu_dp_value_update(DPID_SURPLUS_GRAIN, granary_weight_percent);
+			}
 		}
 	}
 }
@@ -133,7 +145,6 @@ void tuya_wifi_uart_service(void* parameter)
 {
 	while(1)
 	{
-		LED1_TOGGLE;
 		rt_thread_delay(50);
 		wifi_uart_service();
 	}	

@@ -6,8 +6,8 @@
 
 
 //全局变量
-extern uint32_t granary_peel;
-extern uint32_t export_peel;
+extern uint16_t granary_peel;
+extern uint16_t export_peel;
 
 //消息队列
 //extern rt_mq_t setting_data_queue;

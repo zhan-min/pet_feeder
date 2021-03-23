@@ -67,9 +67,10 @@ static uint8_t read_dout(void)
 //****************************************************
 //读取HX711
 //****************************************************
-uint32_t hx711_granary_read(void)	//增益128
+uint16_t hx711_granary_read(void)	//增益128
 {
-	uint32_t count; 
+	uint32_t count;
+	uint16_t granary_weight;
 	uint8_t i; 
 	set_hx711_dout(); 
 	rt_thread_delay(5);
@@ -88,6 +89,7 @@ uint32_t hx711_granary_read(void)	//增益128
   count=count^0x800000;//第25个脉冲下降沿来时，转换数据
 	rt_thread_delay(5);
 	reset_hx711_sck(); 
-	return(count);
+	granary_weight = (unsigned long)((float)count/gapvalue_granary);
+	return(granary_weight);
 }
 
