@@ -116,7 +116,7 @@ const DOWNLOAD_CMD_S download_cmd[] =
 void uart_transmit_output(unsigned char value)
 {
     //#error "请将MCU串口发送函数填入该函数,并删除该行"
-    Usart_SendByte( DEBUG_USARTx, value);
+    Usart_SendByte( APP_USARTx, value);
 /*
     //Example:
     extern void Uart_PutChar(unsigned char value);

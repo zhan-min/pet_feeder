@@ -68,7 +68,8 @@ void granary_weight(void* parameter)
 	uint32_t tem, granary_weight = 0;
 	while(1)
 	{
-		LED2_ON;
+		LED2_TOGGLE;
+		rt_thread_delay(50);
 		tem = hx711_granary_read() - granary_peel;
 		if(tem - granary_weight > 50)
 		{
@@ -90,9 +91,8 @@ void export_weight(void* parameter)
 	uint32_t tem, export_weight = 0;
 	while(1)
 	{
+		rt_thread_delay(50);
 		tem = hx711_export_read() - export_peel;
-		export_weight = tem;
-		mcu_dp_value_update(DPID_WEIGHT, export_weight);
 		if(tem - export_weight > 50)
 		{
 			export_weight = tem;
@@ -112,6 +112,7 @@ void key1_scan(void* parameter)
 {
 	while(1)
 	{
+		rt_thread_delay(50);
 		if( GPIO_ReadInputDataBit(KEY1_INT_GPIO_PORT, KEY1_INT_GPIO_PIN) == KEY_ON )
 		{
 			// 松手检测
@@ -132,7 +133,7 @@ void tuya_wifi_uart_service(void* parameter)
 {
 	while(1)
 	{
-		LED2_TOGGLE;
+		LED1_TOGGLE;
 		rt_thread_delay(50);
 		wifi_uart_service();
 	}	
@@ -167,22 +168,22 @@ void Run(void)
 	
 	/**********创建线程************/
 	
-//	granary_weight_thread =                                   /* 线程控制块指针 */
-//							rt_thread_create( "granary_weight",           /* 线程名字 */
-//																granary_weight,             /* 线程入口函数 */
-//																RT_NULL,               /* 线程入口函数参数 */
-//																512,                   /* 线程栈大小 */
-//																6,                     /* 线程的优先级 */
-//																20);                   /* 线程时间片 */
-//	
-//	if (granary_weight_thread != RT_NULL) 
-//        rt_thread_startup(granary_weight_thread);
+	granary_weight_thread =                                   /* 线程控制块指针 */
+							rt_thread_create( "granary_weight",           /* 线程名字 */
+																granary_weight,             /* 线程入口函数 */
+																RT_NULL,               /* 线程入口函数参数 */
+																256,                   /* 线程栈大小 */
+																6,                     /* 线程的优先级 */
+																20);                   /* 线程时间片 */
+	
+	if (granary_weight_thread != RT_NULL) 
+        rt_thread_startup(granary_weight_thread);
 	
 	export_weight_thread =                                   /* 线程控制块指针 */
 							rt_thread_create( "export_weight",           /* 线程名字 */
 																export_weight,             /* 线程入口函数 */
 																RT_NULL,               /* 线程入口函数参数 */
-																512,                   /* 线程栈大小 */
+																256,                   /* 线程栈大小 */
 																6,                     /* 线程的优先级 */
 																20);                   /* 线程时间片 */
 	
@@ -193,7 +194,7 @@ void Run(void)
 							rt_thread_create( "key1_scan",           /* 线程名字 */
 																key1_scan,             /* 线程入口函数 */
 																RT_NULL,               /* 线程入口函数参数 */
-																512,                   /* 线程栈大小 */
+																256,                   /* 线程栈大小 */
 																6,                     /* 线程的优先级 */
 																20);                   /* 线程时间片 */
 	
@@ -205,7 +206,7 @@ void Run(void)
 							rt_thread_create( "wifi_uart_service",   /* 线程名字 */
 																tuya_wifi_uart_service,/* 线程入口函数 */
 																RT_NULL,               /* 线程入口函数参数 */
-																512,                   /* 线程栈大小 */
+																256,                   /* 线程栈大小 */
 																5,                     /* 线程的优先级 */
 																20);                   /* 线程时间片 */
    if (wifi_uart_service_thread != RT_NULL) 
@@ -216,11 +217,15 @@ void Run(void)
 							rt_thread_create( "quick_feed",          /* 线程名字 */
 																quick_feed,            /* 线程入口函数 */
 																RT_NULL,               /* 线程入口函数参数 */
-																512,                   /* 线程栈大小 */
+																256,                   /* 线程栈大小 */
 																4,                     /* 线程的优先级 */
 																20);                   /* 线程时间片 */
    if (quick_feed_thread != RT_NULL) 
         rt_thread_startup(quick_feed_thread);
+	 else
+	 {
+		rt_kprintf("thread startup failed!!!");
+	 }
 }
 
 

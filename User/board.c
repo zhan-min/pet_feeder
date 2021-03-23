@@ -24,7 +24,7 @@
 
 
 #if defined(RT_USING_USER_MAIN) && defined(RT_USING_HEAP)
-#define RT_HEAP_SIZE 1024
+#define RT_HEAP_SIZE 1024*10
 static uint32_t rt_heap[RT_HEAP_SIZE];     // heap default size: 4K(1024 * 4)
 RT_WEAK void *rt_heap_begin_get(void)
 {
@@ -96,12 +96,12 @@ void rt_hw_console_output(const char *str)
 		/* »»ÐÐ */
         if (*str=='\n')
 		{
-			USART_SendData(DEBUG_USARTx, '\r'); 
-			while (USART_GetFlagStatus(DEBUG_USARTx, USART_FLAG_TXE) == RESET);
+			USART_SendData(SYS_USARTx, '\r'); 
+			while (USART_GetFlagStatus(SYS_USARTx, USART_FLAG_TXE) == RESET);
 		}
 
-		USART_SendData(DEBUG_USARTx, *str++); 				
-		while (USART_GetFlagStatus(DEBUG_USARTx, USART_FLAG_TXE) == RESET);	
+		USART_SendData(SYS_USARTx, *str++); 				
+		while (USART_GetFlagStatus(SYS_USARTx, USART_FLAG_TXE) == RESET);	
 	}	
 
 	/* ÍË³öÁÙ½ç¶Î */
@@ -122,15 +122,15 @@ char rt_hw_console_getchar(void)
 {
 	int ch = -1;
 	
-	if( USART_GetFlagStatus(DEBUG_USARTx, USART_FLAG_RXNE) != RESET )
+	if( USART_GetFlagStatus(SYS_USARTx, USART_FLAG_RXNE) != RESET )
 	{
-		ch = (int)USART_ReceiveData(DEBUG_USARTx);
+		ch = (int)USART_ReceiveData(SYS_USARTx);
 	}
 	else
 	{
-		if( USART_GetFlagStatus(DEBUG_USARTx, USART_FLAG_ORE) != RESET )
+		if( USART_GetFlagStatus(SYS_USARTx, USART_FLAG_ORE) != RESET )
 		{
-			USART_ClearFlag(DEBUG_USARTx, USART_FLAG_TC);
+			USART_ClearFlag(SYS_USARTx, USART_FLAG_TC);
 		}
 		rt_thread_delay(10);
 	}

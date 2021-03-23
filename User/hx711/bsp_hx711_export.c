@@ -1,5 +1,5 @@
 #include "bsp_hx711_export.h"
-#include "bsp_led.h"
+#include "rtthread.h"
 
 
 
@@ -38,15 +38,6 @@ void HX711_EXPORT_GPIO_Config(void)
 }
 
 
-//****************************************************
-//延时函数
-//****************************************************
-static void Delay__hx711_us(void)
-{
-	uint8_t i=2;
-	while(i--);
-}
-
 
 static void set_hx711_sck(void)
 {
@@ -81,11 +72,10 @@ uint32_t hx711_export_read(void)	//增益128
 	uint32_t count;
 	uint8_t i; 
 	set_hx711_dout(); 
-	Delay__hx711_us();
+	rt_thread_delay(5);
 	reset_hx711_sck();
 	count=0;
 	while(read_dout());
-	LED2_ON;
 	for(i=0;i<24;i++)
 	{ 
 		set_hx711_sck(); 
@@ -96,7 +86,7 @@ uint32_t hx711_export_read(void)	//增益128
 	} 
  	set_hx711_sck(); 
   count=count^0x800000;//第25个脉冲下降沿来时，转换数据
-	Delay__hx711_us();
+	rt_thread_delay(5);
 	reset_hx711_sck(); 
 	return(count);
 }

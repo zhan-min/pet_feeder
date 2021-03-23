@@ -12,9 +12,9 @@
 void DEBUG_USART_IRQHandler(void)
 {
   uint8_t ucTemp;
-	if(USART_GetITStatus(DEBUG_USARTx,USART_IT_RXNE)!=RESET)
+	if(USART_GetITStatus(APP_USARTx,USART_IT_RXNE)!=RESET)
 	{		
-		ucTemp = USART_ReceiveData(DEBUG_USARTx);
+		ucTemp = USART_ReceiveData(APP_USARTx);
 		uart_receive_input(ucTemp);
 	}	 
 }
