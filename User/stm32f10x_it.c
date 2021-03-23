@@ -9,7 +9,7 @@
 
 
 // 串口中断服务函数
-void DEBUG_USART_IRQHandler(void)
+void APP_USART_IRQHandler(void)
 {
   uint8_t ucTemp;
 	if(USART_GetITStatus(APP_USARTx,USART_IT_RXNE)!=RESET)

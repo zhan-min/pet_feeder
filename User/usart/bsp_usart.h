@@ -15,7 +15,7 @@
 #define  SYS_USARTx                   USART1
 #define  SYS_USART_CLK                RCC_APB2Periph_USART1
 #define  SYS_USART_APBxClkCmd         RCC_APB2PeriphClockCmd
-#define  SYS_USART_BAUDRATE           9600
+#define  SYS_USART_BAUDRATE           115200
 
 // USART GPIO 引脚宏定义
 #define  SYS_USART_GPIO_CLK           (RCC_APB2Periph_GPIOA)
@@ -31,22 +31,22 @@
 
 
 // 串口2-USART2
-#define  DEBUG_USARTx                   USART2
-#define  DEBUG_USART_CLK                RCC_APB1Periph_USART2
-#define  DEBUG_USART_APBxClkCmd         RCC_APB1PeriphClockCmd
-#define  DEBUG_USART_BAUDRATE           115200
+#define  APP_USARTx                   USART2
+#define  APP_USART_CLK                RCC_APB1Periph_USART2
+#define  APP_USART_APBxClkCmd         RCC_APB1PeriphClockCmd
+#define  APP_USART_BAUDRATE           9600
 
 // USART GPIO 引脚宏定义
-#define  DEBUG_USART_GPIO_CLK           (RCC_APB2Periph_GPIOA)
-#define  DEBUG_USART_GPIO_APBxClkCmd    RCC_APB2PeriphClockCmd
+#define  APP_USART_GPIO_CLK           (RCC_APB2Periph_GPIOA)
+#define  APP_USART_GPIO_APBxClkCmd    RCC_APB2PeriphClockCmd
     
-#define  DEBUG_USART_TX_GPIO_PORT       GPIOA   
-#define  DEBUG_USART_TX_GPIO_PIN        GPIO_Pin_2
-#define  DEBUG_USART_RX_GPIO_PORT       GPIOA
-#define  DEBUG_USART_RX_GPIO_PIN        GPIO_Pin_3
+#define  APP_USART_TX_GPIO_PORT       GPIOA   
+#define  APP_USART_TX_GPIO_PIN        GPIO_Pin_2
+#define  APP_USART_RX_GPIO_PORT       GPIOA
+#define  APP_USART_RX_GPIO_PIN        GPIO_Pin_3
 
-#define  DEBUG_USART_IRQ                USART2_IRQn
-#define  DEBUG_USART_IRQHandler         USART2_IRQHandler
+#define  APP_USART_IRQ                USART2_IRQn
+#define  APP_USART_IRQHandler         USART2_IRQHandler
 
 // 串口3-USART3
 //#define  DEBUG_USARTx                   USART3
