@@ -38,8 +38,10 @@
 #include "bsp_hx711_export.h"
 #include "bsp_hx711_granary.h"
 
+//debug
+#include "bsp_led.h"
 
-uint8_t meal_plan[] = "0112320c01";//喂食计划
+
 
 
 #ifdef WEATHER_ENABLE
@@ -152,7 +154,7 @@ void all_data_update(void)
 {
     //#error "请在此处理可下发可上报数据及只上报数据示例,处理完成后删除该行"
     //此代码为平台自动生成，请按照实际数据修改每个可下发可上报函数和只上报函数
-    mcu_dp_raw_update(DPID_MEAL_PLAN, meal_plan, 5); //RAW型数据上报;
+    mcu_dp_raw_update(DPID_MEAL_PLAN, 0x00, 0); //RAW型数据上报;
     mcu_dp_bool_update(DPID_QUICK_FEED, 0); //BOOL型数据上报;
     mcu_dp_value_update(DPID_MANUAL_FEED, 0); //VALUE型数据上报;
     mcu_dp_enum_update(DPID_FEED_STATE, 0); //枚举型数据上报;
@@ -184,11 +186,10 @@ static unsigned char dp_download_meal_plan_handle(const unsigned char value[], u
 	unsigned char ret;
 	//RAW类型数据处理
 	//先把接收的数据打印出来看看
+	
 	for(uint8_t i=0; i<length; i++)
 	{
-		rt_kprintf("meal_plan: ");
-		rt_kprintf("%c\r",value[i]);
-		rt_kprintf("\r\n");
+		rt_kprintf("%c",value[i]);		
 	}
 	
 	//处理完DP数据后应有反馈
@@ -547,6 +548,7 @@ void mcu_write_rtctime(unsigned char time[])
     if(time[0] == 1)
 		{
       //正确接收到wifi模块返回的本地时钟数据
+			time_now.updata_state = SUCCESS;
 			time_now.year  = (uint8_t)time[1] + 2000;
 			time_now.month = (uint8_t)time[2];
 			time_now.day   = (uint8_t)time[3];
@@ -557,7 +559,8 @@ void mcu_write_rtctime(unsigned char time[])
     }
 		else
 		{
-        //获取本地时钟数据出错,有可能是当前wifi模块未联网
+       //获取本地时钟数据出错,有可能是当前wifi模块未联网
+			time_now.updata_state = ERROR;
     }
 }
 #endif

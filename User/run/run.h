@@ -6,6 +6,7 @@
 
 
 //全局变量
+
 struct date_time 
 {
 	uint16_t year;
@@ -15,9 +16,19 @@ struct date_time
 	uint8_t min;
 	uint8_t sec;
 	uint8_t week;
+	ErrorStatus updata_state;
+};
+
+struct meal_plan_struct
+{
+	uint8_t week;
+	uint8_t hour;
+	uint8_t min;
+	uint8_t sec;
 };
 
 extern struct date_time time_now;
+extern struct meal_plan_struct meal_plan[];
 extern uint16_t granary_peel;
 extern uint16_t export_peel;
 

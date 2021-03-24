@@ -23,6 +23,7 @@
 
 //全局变量
 struct date_time time_now;
+struct meal_plan_struct meal_plan[10];
 
 
 uint16_t granary_peel = 0;
@@ -72,21 +73,34 @@ void time_sys(void* parameter)
 	time_now.min = 0;
 	time_now.sec = 0;
 	time_now.week = 1;
+	time_now.updata_state = ERROR;
 	
 	while(1)
 	{
+		//rt_kprintf("星期%d %d:%d:%d\n", time_now.week, time_now.hour, time_now.min, time_now.sec);
 		rt_thread_mdelay(1000);
 		time_now.sec ++;
+		
+		if(time_now.updata_state != SUCCESS)
+		{
+			mcu_get_system_time();
+		}
+		
 		if(time_now.sec >= 60)
 		{
+			time_now.sec = 0;
 			time_now.min ++;
 			if(time_now.min >= 60)
 			{
-				mcu_get_system_time();
+				time_now.min = 0;
 				time_now.hour ++;
 				if(time_now.hour >= 24)
 				{
-					mcu_get_system_time();
+					time_now.hour = 0;
+					do
+					{
+						mcu_get_system_time();
+					}while(time_now.updata_state != SUCCESS);					
 				}
 			}
 		}

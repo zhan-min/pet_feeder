@@ -129,7 +129,7 @@ wifi_test_result内部有#err提示,完成函数后请删除该#err
 此两函数内#err提示,完成函数后请删除该#err
 开启天气功能，串口数据缓存区的大小要开大一些
 ******************************************************************************/
-#define         WEATHER_ENABLE                  //打开天气功能
+//#define         WEATHER_ENABLE                  //打开天气功能
 #ifdef          WEATHER_ENABLE
 /*  在protocol.c文件中weather_choose数组中可调整，然后将打开服务的类型数目写到此宏定义  */
 #define         WEATHER_CHOOSE_CNT              4   //选择的需要天气服务类型的数目

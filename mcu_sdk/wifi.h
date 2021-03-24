@@ -45,10 +45,6 @@
 #endif
 
 
-#ifndef ERROR
-#define         ERROR            0
-#endif
-
 #ifndef INVALID
 #define         INVALID          0xFF
 #endif
