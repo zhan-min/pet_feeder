@@ -6,6 +6,18 @@
 
 
 //全局变量
+struct date_time 
+{
+	uint16_t year;
+	uint8_t month;
+	uint8_t day;
+	uint8_t hour;
+	uint8_t min;
+	uint8_t sec;
+	uint8_t week;
+};
+
+extern struct date_time time_now;
 extern uint16_t granary_peel;
 extern uint16_t export_peel;
 

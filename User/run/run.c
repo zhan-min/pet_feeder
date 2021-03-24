@@ -22,6 +22,9 @@
 */
 
 //全局变量
+struct date_time time_now;
+
+
 uint16_t granary_peel = 0;
 uint16_t export_peel  = 0;
 
@@ -38,6 +41,7 @@ static rt_thread_t export_weight_thread = NULL;
 static rt_thread_t key1_scan_thread  = RT_NULL;
 static rt_thread_t wifi_uart_service_thread  = RT_NULL;
 static rt_thread_t quick_feed_thread  = RT_NULL;
+static rt_thread_t time_sys_thread = RT_NULL;
 
 
 
@@ -56,6 +60,40 @@ static rt_thread_t quick_feed_thread  = RT_NULL;
 *                             线程定义
 *************************************************************************
 */
+
+
+
+void time_sys(void* parameter)
+{
+	time_now.year = 2020;
+	time_now.month = 1;
+	time_now.day = 1;
+	time_now.hour = 0;
+	time_now.min = 0;
+	time_now.sec = 0;
+	time_now.week = 1;
+	
+	while(1)
+	{
+		rt_thread_mdelay(1000);
+		time_now.sec ++;
+		if(time_now.sec >= 60)
+		{
+			time_now.min ++;
+			if(time_now.min >= 60)
+			{
+				mcu_get_system_time();
+				time_now.hour ++;
+				if(time_now.hour >= 24)
+				{
+					mcu_get_system_time();
+				}
+			}
+		}
+	}
+}
+
+
 
 /**
  * @brief  粮桶余粮重量检测
@@ -178,6 +216,17 @@ void Run(void)
 																	RT_IPC_FLAG_PRIO); /* 信号量模式 */
 	
 	/**********创建线程************/
+	
+	time_sys_thread =                                   /* 线程控制块指针 */
+							rt_thread_create( "time_sys",           /* 线程名字 */
+																time_sys,             /* 线程入口函数 */
+																RT_NULL,               /* 线程入口函数参数 */
+																256,                   /* 线程栈大小 */
+																2,                     /* 线程的优先级 */
+																20);                   /* 线程时间片 */
+	
+	if (time_sys_thread != RT_NULL) 
+        rt_thread_startup(time_sys_thread);
 	
 	granary_weight_thread =                                   /* 线程控制块指针 */
 							rt_thread_create( "granary_weight",           /* 线程名字 */
