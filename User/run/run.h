@@ -29,6 +29,7 @@ struct meal_plan_struct
 
 extern struct date_time time_now;
 extern struct meal_plan_struct meal_plan[];
+extern struct meal_plan_struct nearly_meal_plan;
 extern uint16_t granary_peel;
 extern uint16_t export_peel;
 

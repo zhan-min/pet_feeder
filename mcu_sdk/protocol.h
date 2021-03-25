@@ -297,6 +297,16 @@ BLE_test_result内部有#err提示,完成函数后请删除该#err
 
 
 /**
+ * @brief  获取最近的喂食计划
+ * @param  Null
+ * @return Null
+ * @note   Null
+ */
+void get_nearly_meal_plan(void);
+
+
+
+/**
  * @brief  串口发送数据
  * @param[in] {value} 串口要发送的1字节数据
  * @return Null

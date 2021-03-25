@@ -180,6 +180,39 @@ void all_data_update(void)
 返回参数 : 成功返回:SUCCESS/失败返回:ERROR
 使用说明 : 可下发可上报类型,需要在处理完数据后上报处理结果至app
 *****************************************************************************/
+
+
+/**
+ * @brief  获取最近的喂食计划
+ * @param  Null
+ * @return Null
+ * @note   Null
+ */
+void get_nearly_meal_plan(void)
+{
+	uint16_t distance, nearly_distance = 24*60;
+	//将当前时间的星期数转换为one-hot型表示方法
+	uint8_t week_day_form = 0x01;
+	week_day_form = week_day_form << (7 - time_now.week);
+	
+	for(uint8_t i=0; i<10; i++)
+	{
+		if( (week_day_form & meal_plan[i].week) != 0 )
+		{
+			distance = (meal_plan[i].hour - time_now.hour)*60 + (meal_plan[i].min - time_now.min);
+			if(distance < nearly_distance)
+			{
+				nearly_meal_plan = meal_plan[i];
+			}		
+		}
+		else
+		{
+			nearly_meal_plan.week = 0x80;//确保日期不是当天的nearly_meal_plan不生效
+		}
+	}
+	
+}
+
 static unsigned char dp_download_meal_plan_handle(const unsigned char value[], unsigned short length)
 {
 	//示例:当前DP类型为RAW
@@ -195,7 +228,7 @@ static unsigned char dp_download_meal_plan_handle(const unsigned char value[], u
 			meal_plan[i].amount = value[5*i+3];
 		}
 	}
-	
+	get_nearly_meal_plan();
 	
 		
 	

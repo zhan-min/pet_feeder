@@ -24,6 +24,7 @@
 //全局变量
 struct date_time time_now;
 struct meal_plan_struct meal_plan[10];
+struct meal_plan_struct nearly_meal_plan;
 
 
 uint16_t granary_peel = 0;
@@ -52,7 +53,19 @@ static rt_thread_t time_sys_thread = RT_NULL;
 *************************************************************************
 */
 
-
+/**
+ * @brief  粮桶余粮重量检测
+ * @param  Null
+ * @return Null
+ * @note   Null
+ */
+static void meal_plan_check(void)
+{
+	if(nearly_meal_plan.week != 0x80 && time_now.min == nearly_meal_plan.min && time_now.hour == nearly_meal_plan.hour)
+	{
+		feed(nearly_meal_plan.amount);
+	}
+}
 
 
 
@@ -90,6 +103,9 @@ void time_sys(void* parameter)
 		{
 			time_now.sec = 0;
 			time_now.min ++;
+			
+			meal_plan_check();
+			
 			if(time_now.min >= 60)
 			{
 				time_now.min = 0;
