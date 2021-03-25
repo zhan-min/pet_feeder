@@ -24,7 +24,7 @@ struct meal_plan_struct
 	uint8_t week;
 	uint8_t hour;
 	uint8_t min;
-	uint8_t sec;
+	uint8_t amount;
 };
 
 extern struct date_time time_now;

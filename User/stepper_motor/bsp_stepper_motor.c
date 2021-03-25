@@ -1,5 +1,5 @@
 #include "bsp_stepper_motor.h"
-#include "delay.h"
+#include "rtthread.h"
 
 /**
   * @brief  初始化控制步进电机的IO
@@ -94,9 +94,9 @@ static void step_motor_rotate_1(void)
 	for(uint8_t i=0; i<200; i++)
 	{
 		GPIO_SetBits(STEP_MOTOR_PLUSE_GPIO_PORT, STEP_MOTOR_PLUSE_GPIO_PIN);
-		rt_hw_us_delay(2);
+		rt_thread_delay(2);
 		GPIO_ResetBits(STEP_MOTOR_PLUSE_GPIO_PORT, STEP_MOTOR_PLUSE_GPIO_PIN);
-		rt_hw_us_delay(2);
+		rt_thread_delay(2);
 	}
 }
 

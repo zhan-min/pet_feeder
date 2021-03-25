@@ -185,12 +185,19 @@ static unsigned char dp_download_meal_plan_handle(const unsigned char value[], u
 	//示例:当前DP类型为RAW
 	unsigned char ret;
 	//RAW类型数据处理
-	//先把接收的数据打印出来看看
-	
-	for(uint8_t i=0; i<length; i++)
+	for(uint8_t i=0; i<10; i++)
 	{
-		rt_kprintf("%c",value[i]);		
+		if((uint16_t)value[5*(i+1)-1] != 0)
+		{
+			meal_plan[i].week   = value[5*i+0];
+			meal_plan[i].hour   = value[5*i+1];
+			meal_plan[i].min    = value[5*i+2];
+			meal_plan[i].amount = value[5*i+3];
+		}
 	}
+	
+	
+		
 	
 	//处理完DP数据后应有反馈
 	ret = mcu_dp_raw_update(DPID_MEAL_PLAN,value,length);

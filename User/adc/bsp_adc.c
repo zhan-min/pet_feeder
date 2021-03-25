@@ -1,7 +1,6 @@
 #include "bsp_adc.h"
 #include "run.h"
 #include "bsp_usart.h"
-#include "delay.h"
 
 
 /**

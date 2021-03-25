@@ -33,7 +33,6 @@
 ".\bsp_led.o"
 ".\bsp_key_exti.o"
 ".\board.o"
-".\delay.o"
 ".\run.o"
 ".\bsp_stepper_motor.o"
 ".\bsp_light.o"
