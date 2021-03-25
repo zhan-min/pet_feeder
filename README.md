@@ -1,4 +1,4 @@
-一款宠物喂食器，基于stm32、rt-thread、Tuya SDK开发。
+一款宠物喂食器，基于stm32、rt-thread、Tuya SDK开发。<br>
 This project is developed using Tuya SDK, which enables you to quickly develop branded apps connecting and controlling smart scenarios of many devices.
 For more information, please check Tuya Developer Website.
 
