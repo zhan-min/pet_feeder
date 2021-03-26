@@ -29,6 +29,7 @@ struct meal_plan_struct nearly_meal_plan;
 
 uint16_t granary_peel = 0;
 uint16_t export_peel  = 0;
+uint8_t meal_plan_amount;
 
 
 //消息队列
@@ -61,7 +62,7 @@ static rt_thread_t time_sys_thread = RT_NULL;
  */
 static void meal_plan_check(void)
 {
-	if(nearly_meal_plan.week != 0x80 && time_now.min == nearly_meal_plan.min && time_now.hour == nearly_meal_plan.hour)
+	if((nearly_meal_plan.week && 0x80 == 0) && time_now.min == nearly_meal_plan.min && time_now.hour == nearly_meal_plan.hour)
 	{
 		feed(nearly_meal_plan.amount);
 	}
@@ -96,7 +97,8 @@ void time_sys(void* parameter)
 		
 		if(time_now.updata_state != SUCCESS)
 		{
-			mcu_get_system_time();
+			mcu_get_system_time();//更新时间日期
+			get_nearly_meal_plan();
 		}
 		
 		if(time_now.sec >= 60)
@@ -110,13 +112,16 @@ void time_sys(void* parameter)
 			{
 				time_now.min = 0;
 				time_now.hour ++;
+				time_now.updata_state = ERROR;//日期的更新靠联网实现	
 				if(time_now.hour >= 24)
 				{
 					time_now.hour = 0;
-					do
+					time_now.week++;
+					if(time_now.week >= 8)
 					{
-						mcu_get_system_time();
-					}while(time_now.updata_state != SUCCESS);					
+						time_now.week = 1;
+					}
+					time_now.updata_state = ERROR;//日期的更新靠联网实现	
 				}
 			}
 		}
@@ -296,7 +301,7 @@ void Run(void)
 							rt_thread_create( "wifi_uart_service",   /* 线程名字 */
 																tuya_wifi_uart_service,/* 线程入口函数 */
 																RT_NULL,               /* 线程入口函数参数 */
-																256,                   /* 线程栈大小 */
+																1024,                   /* 线程栈大小 */
 																5,                     /* 线程的优先级 */
 																20);                   /* 线程时间片 */
    if (wifi_uart_service_thread != RT_NULL) 

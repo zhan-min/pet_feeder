@@ -21,7 +21,7 @@ struct date_time
 
 struct meal_plan_struct
 {
-	uint8_t week;
+	uint16_t week;
 	uint8_t hour;
 	uint8_t min;
 	uint8_t amount;
@@ -32,6 +32,7 @@ extern struct meal_plan_struct meal_plan[];
 extern struct meal_plan_struct nearly_meal_plan;
 extern uint16_t granary_peel;
 extern uint16_t export_peel;
+extern uint8_t meal_plan_amount;
 
 //消息队列
 //extern rt_mq_t setting_data_queue;

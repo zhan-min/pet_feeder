@@ -78,8 +78,8 @@ MCU可调用mcu_api.c文件内的mcu_firm_update_query()函数获取当前MCU固
                     如当前使用MCU的RAM不够,可修改为24
 ******************************************************************************/
 #ifndef SUPPORT_MCU_FIRM_UPDATE
-#define WIFI_UART_RECV_BUF_LMT          16              //串口数据接收缓存区大小,如MCU的RAM不够,可缩小
-#define WIFI_DATA_PROCESS_LMT           24              //串口数据处理缓存区大小,根据用户DP数据大小量定,必须大于24
+#define WIFI_UART_RECV_BUF_LMT          128              //串口数据接收缓存区大小,如MCU的RAM不够,可缩小
+#define WIFI_DATA_PROCESS_LMT           128              //串口数据处理缓存区大小,根据用户DP数据大小量定,必须大于24
 #else
 #define WIFI_UART_RECV_BUF_LMT          128             //串口数据接收缓存区大小,如MCU的RAM不够,可缩小
 
@@ -90,7 +90,7 @@ MCU可调用mcu_api.c文件内的mcu_firm_update_query()函数获取当前MCU固
 
 #endif
 
-#define WIFIR_UART_SEND_BUF_LMT         48              //根据用户DP数据大小量定,必须大于48
+#define WIFIR_UART_SEND_BUF_LMT         128              //根据用户DP数据大小量定,必须大于48
 /******************************************************************************
                         4:定义模块工作方式
 模块自处理:

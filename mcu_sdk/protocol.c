@@ -195,15 +195,16 @@ void get_nearly_meal_plan(void)
 	uint8_t week_day_form = 0x01;
 	week_day_form = week_day_form << (7 - time_now.week);
 	
-	for(uint8_t i=0; i<10; i++)
+	for(uint8_t i=0; i<meal_plan_amount; i++)
 	{
-		if( (week_day_form & meal_plan[i].week) != 0 )
+		if( (week_day_form & meal_plan[i].week) != 0 && meal_plan[i].hour >= time_now.hour && meal_plan[i].min >= time_now.min)
 		{
 			distance = (meal_plan[i].hour - time_now.hour)*60 + (meal_plan[i].min - time_now.min);
 			if(distance < nearly_distance)
 			{
+				nearly_distance = distance;
 				nearly_meal_plan = meal_plan[i];
-			}		
+			}
 		}
 		else
 		{
@@ -215,21 +216,33 @@ void get_nearly_meal_plan(void)
 
 static unsigned char dp_download_meal_plan_handle(const unsigned char value[], unsigned short length)
 {
+	uint8_t i, k=0;
 	//示例:当前DP类型为RAW
 	unsigned char ret;
 	//RAW类型数据处理
-	for(uint8_t i=0; i<10; i++)
+	meal_plan_amount = 0;
+	for(i=0; i<length/5; i++)
 	{
 		if((uint16_t)value[5*(i+1)-1] != 0)
 		{
-			meal_plan[i].week   = value[5*i+0];
-			meal_plan[i].hour   = value[5*i+1];
-			meal_plan[i].min    = value[5*i+2];
-			meal_plan[i].amount = value[5*i+3];
+			meal_plan_amount++;
+			meal_plan[k].week   = value[5*i+0];
+			meal_plan[k].hour   = value[5*i+1];
+			meal_plan[k].min    = value[5*i+2];
+			meal_plan[k].amount = value[5*i+3];
+			k++;
 		}
 	}
-	get_nearly_meal_plan();
 	
+	for(i=0; i<meal_plan_amount; i++)
+	{
+		rt_kprintf("meal plan %d: %d %d %d %d\n", i, meal_plan[i].week, meal_plan[i].hour, meal_plan[i].min,meal_plan[i].amount);
+	}
+	rt_kprintf("\n");
+	
+	get_nearly_meal_plan();
+	rt_kprintf("nearly_meal plan: %d %d %d %d\n", nearly_meal_plan.week, nearly_meal_plan.hour, nearly_meal_plan.min,nearly_meal_plan.amount);
+	rt_kprintf("\n");
 		
 	
 	//处理完DP数据后应有反馈
@@ -588,7 +601,6 @@ void mcu_write_rtctime(unsigned char time[])
     if(time[0] == 1)
 		{
       //正确接收到wifi模块返回的本地时钟数据
-			time_now.updata_state = SUCCESS;
 			time_now.year  = (uint8_t)time[1] + 2000;
 			time_now.month = (uint8_t)time[2];
 			time_now.day   = (uint8_t)time[3];
@@ -596,6 +608,7 @@ void mcu_write_rtctime(unsigned char time[])
 			time_now.min   = (uint8_t)time[5];
 			time_now.sec   = (uint8_t)time[6];
 			time_now.week  = (uint8_t)time[7];
+			time_now.updata_state = SUCCESS;
     }
 		else
 		{
