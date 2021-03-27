@@ -62,9 +62,10 @@ static rt_thread_t time_sys_thread = RT_NULL;
  */
 static void meal_plan_check(void)
 {
-	if((nearly_meal_plan.week && 0x80 == 0) && time_now.min == nearly_meal_plan.min && time_now.hour == nearly_meal_plan.hour)
+	if(((nearly_meal_plan.week & 0x80) == 0) && time_now.min == nearly_meal_plan.min && time_now.hour == nearly_meal_plan.hour)
 	{
 		feed(nearly_meal_plan.amount);
+		get_nearly_meal_plan();
 	}
 }
 
@@ -92,6 +93,7 @@ void time_sys(void* parameter)
 	while(1)
 	{
 		//rt_kprintf("ÐÇÆÚ%d %d:%d:%d\n", time_now.week, time_now.hour, time_now.min, time_now.sec);
+		//rt_kprintf("nearly meal plan: %d %d %d %d\n", nearly_meal_plan.week, nearly_meal_plan.hour, nearly_meal_plan.min,nearly_meal_plan.amount);
 		rt_thread_mdelay(1000);
 		time_now.sec ++;
 		

@@ -194,10 +194,11 @@ void get_nearly_meal_plan(void)
 	//将当前时间的星期数转换为one-hot型表示方法
 	uint8_t week_day_form = 0x01;
 	week_day_form = week_day_form << (7 - time_now.week);
+	nearly_meal_plan.week = 0x80;//确保日期不是当天的nearly_meal_plan不生效
 	
 	for(uint8_t i=0; i<meal_plan_amount; i++)
 	{
-		if( (week_day_form & meal_plan[i].week) != 0 && meal_plan[i].hour >= time_now.hour && meal_plan[i].min >= time_now.min)
+		if( ((week_day_form & meal_plan[i].week) != 0) && (meal_plan[i].hour >= time_now.hour) && (meal_plan[i].min > time_now.min))
 		{
 			distance = (meal_plan[i].hour - time_now.hour)*60 + (meal_plan[i].min - time_now.min);
 			if(distance < nearly_distance)
@@ -206,12 +207,7 @@ void get_nearly_meal_plan(void)
 				nearly_meal_plan = meal_plan[i];
 			}
 		}
-		else
-		{
-			nearly_meal_plan.week = 0x80;//确保日期不是当天的nearly_meal_plan不生效
-		}
 	}
-	
 }
 
 static unsigned char dp_download_meal_plan_handle(const unsigned char value[], unsigned short length)
@@ -234,15 +230,13 @@ static unsigned char dp_download_meal_plan_handle(const unsigned char value[], u
 		}
 	}
 	
-	for(i=0; i<meal_plan_amount; i++)
-	{
-		rt_kprintf("meal plan %d: %d %d %d %d\n", i, meal_plan[i].week, meal_plan[i].hour, meal_plan[i].min,meal_plan[i].amount);
-	}
-	rt_kprintf("\n");
+//	for(i=0; i<meal_plan_amount; i++)
+//	{
+//		rt_kprintf("meal plan %d: %d %d %d %d\n", i, meal_plan[i].week, meal_plan[i].hour, meal_plan[i].min,meal_plan[i].amount);
+//	}
+//	rt_kprintf("\n");
 	
 	get_nearly_meal_plan();
-	rt_kprintf("nearly_meal plan: %d %d %d %d\n", nearly_meal_plan.week, nearly_meal_plan.hour, nearly_meal_plan.min,nearly_meal_plan.amount);
-	rt_kprintf("\n");
 		
 	
 	//处理完DP数据后应有反馈
