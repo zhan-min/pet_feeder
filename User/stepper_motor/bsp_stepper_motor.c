@@ -91,7 +91,7 @@ void set_dir_reverse(void)
   */
 static void step_motor_rotate_1(void)
 {
-	for(uint8_t i=0; i<200; i++)
+	for(uint16_t i=0; i<800; i++)
 	{
 		GPIO_SetBits(STEP_MOTOR_PLUSE_GPIO_PORT, STEP_MOTOR_PLUSE_GPIO_PIN);
 		rt_thread_delay(2);
