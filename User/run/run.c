@@ -55,7 +55,7 @@ static rt_thread_t time_sys_thread = RT_NULL;
 */
 
 /**
- * @brief  粮桶余粮重量检测
+ * @brief  喂食计划检查
  * @param  Null
  * @return Null
  * @note   Null
@@ -78,7 +78,12 @@ static void meal_plan_check(void)
 */
 
 
-
+/**
+ * @brief  时间系统
+ * @param  Null
+ * @return Null
+ * @note   Null
+ */
 void time_sys(void* parameter)
 {
 	time_now.year = 2020;
@@ -92,29 +97,25 @@ void time_sys(void* parameter)
 	
 	while(1)
 	{
-		//rt_kprintf("星期%d %d:%d:%d\n", time_now.week, time_now.hour, time_now.min, time_now.sec);
-		//rt_kprintf("nearly meal plan: %d %d %d %d\n", nearly_meal_plan.week, nearly_meal_plan.hour, nearly_meal_plan.min,nearly_meal_plan.amount);
 		rt_thread_mdelay(1000);
 		time_now.sec ++;
-		
 		if(time_now.updata_state != SUCCESS)
 		{
 			mcu_get_system_time();//更新时间日期
 			get_nearly_meal_plan();
 		}
-		
 		if(time_now.sec >= 60)
 		{
 			time_now.sec = 0;
 			time_now.min ++;
 			
-			meal_plan_check();
+			meal_plan_check();//喂食计划检测
 			
 			if(time_now.min >= 60)
 			{
 				time_now.min = 0;
 				time_now.hour ++;
-				time_now.updata_state = ERROR;//日期的更新靠联网实现	
+				time_now.updata_state = ERROR;//日期的更新靠联网实现
 				if(time_now.hour >= 24)
 				{
 					time_now.hour = 0;

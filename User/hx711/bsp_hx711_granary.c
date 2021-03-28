@@ -64,9 +64,13 @@ static uint8_t read_dout(void)
 	return GPIO_ReadInputDataBit(HX711_GRANARY_DOUT_GPIO_PORT, HX711_GRANARY_DOUT_GPIO_PIN);
 }
 
-//****************************************************
-//读取HX711
-//****************************************************
+
+/**
+ * @brief  读取HX711
+ * @param  Null
+ * @return 压力传感器值
+ * @note   Null
+ */
 uint16_t hx711_granary_read(void)	//增益128
 {
 	uint32_t count;
