@@ -5,6 +5,7 @@
 #include "bsp_key_exti.h"
 #include "bsp_hx711_granary.h"
 #include "bsp_hx711_export.h"
+#include "bsp_beep.h"
 
 
 /*看情况删除或保留*/
@@ -29,7 +30,8 @@ struct meal_plan_struct nearly_meal_plan;
 
 uint16_t granary_peel = 0;
 uint16_t export_peel  = 0;
-uint8_t meal_plan_amount;
+uint8_t  meal_plan_amount;
+
 
 
 //消息队列
@@ -71,6 +73,7 @@ static void meal_plan_check(void)
 
 
 
+
 /*
 *************************************************************************
 *                             线程定义
@@ -86,6 +89,7 @@ static void meal_plan_check(void)
  */
 void time_sys(void* parameter)
 {
+	uint8_t time_counter = 0;
 	time_now.year = 2020;
 	time_now.month = 1;
 	time_now.day = 1;
@@ -97,8 +101,17 @@ void time_sys(void* parameter)
 	
 	while(1)
 	{
-		rt_thread_mdelay(1000);
-		time_now.sec ++;
+		rt_thread_mdelay(10);
+		if(beep_count_state == ENABLE)
+		{
+			beep_counter ++;//为扬声器提供节拍
+		}
+		
+		if(++time_counter >= 100 )
+		{
+			time_counter = 0;
+			time_now.sec ++;
+		}
 		if(time_now.updata_state != SUCCESS)
 		{
 			mcu_get_system_time();//更新时间日期
@@ -237,6 +250,7 @@ void quick_feed(void* paprameter)
 	while(1)
 	{
 		rt_sem_take(quick_feed_sem, RT_WAITING_FOREVER);
+		meal_voice(meal_voice_time);
 		feed(1);
 	}	
 }

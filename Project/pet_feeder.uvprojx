@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER,STM32F10X_HD</Define>
               <Undefine></Undefine>
-              <IncludePath>..\Libraries\CMSIS;..\Libraries\STM32F10x_StdPeriph_Driver\inc;..\User;..\User\usart;..\User\adc;..\User\lcd;..\User\Led;..\User\key_exti;..\User\run;..\mcu_sdk;..\User\stepper_motor;..\rtthread\components\finsh;..\rtthread\include\libc;..\rtthread\include;..\User\light;..\User\hx711</IncludePath>
+              <IncludePath>..\Libraries\CMSIS;..\Libraries\STM32F10x_StdPeriph_Driver\inc;..\User;..\User\usart;..\User\adc;..\User\lcd;..\User\Led;..\User\key_exti;..\User\run;..\mcu_sdk;..\User\stepper_motor;..\rtthread\components\finsh;..\rtthread\include\libc;..\rtthread\include;..\User\light;..\User\hx711;..\User\beep</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -601,6 +601,11 @@
               <FileName>run.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\User\run\run.h</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_beep.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\beep\bsp_beep.c</FilePath>
             </File>
           </Files>
         </Group>
