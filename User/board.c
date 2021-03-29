@@ -21,6 +21,7 @@
 #include "bsp_hx711_granary.h"
 #include "bsp_hx711_export.h"
 #include "bsp_key_exti.h"
+#include "bsp_beep.h"
 
 
 #if defined(RT_USING_USER_MAIN) && defined(RT_USING_HEAP)
@@ -52,6 +53,7 @@ void rt_hw_board_init()
 	EXTI_Key_Config();
 	HX711_EXPORT_GPIO_Config();
 	HX711_GRANARY_GPIO_Config();
+	BEEP_GPIO_Config();
 	
 	
     /* Call components board initial (use INIT_BOARD_EXPORT()) */

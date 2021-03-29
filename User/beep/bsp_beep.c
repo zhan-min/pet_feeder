@@ -124,7 +124,7 @@ void meal_voice(uint8_t n)
 			while(beep_counter!=sound_pace)
 			{ 
 				BEEP_TOGGLE;
-				rt_thread_delay(16*sound_signal);
+				rt_thread_delay(sound_signal);
 			}
 			i++;
 			beep_counter=0;//节拍计数器置0，进入下一个音调 
@@ -132,7 +132,3 @@ void meal_voice(uint8_t n)
 		rt_thread_mdelay(10); //歌曲演唱完毕后,延时一段时间
 	}
 }
-
-
-
-
