@@ -154,15 +154,22 @@ void time_sys(void* parameter)
  */
 void granary_weight(void* parameter)
 {
-	uint32_t tem, granary_weight;
+	uint32_t tem, granary_weight, diff;
 	uint8_t granary_weight_percent;
 	while(1)
 	{
 		rt_thread_delay(50);
 		tem = hx711_granary_read() - granary_peel;
-		
+		if(tem > granary_weight)
+		{
+			diff = tem - granary_weight;
+		}
+		else
+		{
+			diff = granary_weight - tem;
+		}
 
-		if(tem - granary_weight > full_granary/100)
+		if(diff > full_granary/100)
 		{
 			granary_weight = tem;
 			
@@ -189,12 +196,20 @@ void granary_weight(void* parameter)
  */
 void export_weight(void* parameter)
 {
-	uint32_t tem, export_weight = 0;
+	uint32_t tem, export_weight, diff;
 	while(1)
 	{
 		rt_thread_delay(50);
 		tem = hx711_export_read() - export_peel;
-		if(tem - export_weight > 50)
+		if(tem > export_weight)
+		{
+			diff = tem - export_weight;
+		}
+		else
+		{
+			diff = export_weight - tem;
+		}
+		if(diff > 50)
 		{
 			export_weight = tem;
 			mcu_dp_value_update(DPID_WEIGHT, export_weight);
